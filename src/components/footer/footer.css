@@ -1,0 +1,11 @@
+.container-footer{
+    background-color: #020f1f;
+}
+
+.text-on{
+    max-width: 512px;
+}
+#soon img:hover{
+    transform: scale(1.05);
+    transition: 0.25s;
+}

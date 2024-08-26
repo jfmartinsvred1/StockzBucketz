@@ -1,0 +1,9 @@
+.container-header{
+    background-color: #020f1f;
+}
+
+.nav-items:hover{
+    cursor: pointer;
+    transition: 0.25s;
+    transform: scale(1.1);
+}
