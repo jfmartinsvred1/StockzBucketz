@@ -31,7 +31,7 @@ const Login = (props: LoginPageProps) => {
   async function login(e:React.FormEvent) {
     e.preventDefault()
     await props.authService.login(form.email.value, form.password.value)
-    .then(()=>{navigate('/')})
+    .then(()=>{navigate('/myStocks')})
     .catch((err)=>setError(err));
   }
 

@@ -121,7 +121,7 @@ describe('Login', ()=>{
     await waitFor(()=>expect(authService.isLoggingIn).toBeTruthy());
   })
 
-  test('given user clicks on login button, when success, then go to home page',async ()=>{
+  test('given user clicks on login button, when success, then go to my stocks page',async ()=>{
     authService.response = Promise.resolve({}as any);
     renderLoginPage()
 
@@ -133,7 +133,7 @@ describe('Login', ()=>{
     const loginButton = screen.getByTestId('btn-login');
     userEvent.click(loginButton);
 
-    await waitFor(()=>expect(window.location.pathname).toEqual('/'));
+    await waitFor(()=>expect(window.location.pathname).toEqual('/myStocks'));
   })
 
   test('given user clicks on login button, when fail, then show error message',async ()=>{

@@ -1,0 +1,25 @@
+.myStockets{
+    max-width: 350px;
+    min-height: 370px;
+}
+.stocks{
+    max-width: 800px;
+}
+
+.btn-newStock{
+    border: 1px solid;
+    border-color: #026E81;
+    background-color: #fff;
+}
+.btn-registeStock{
+    background-color: #026E81;
+    border: 0px;
+    color: #fff;
+}
+
+.btn-registeStock:hover,
+.btn-newStock:hover
+{
+    transform: scale(1.1);
+    transition: .25s;
+}
