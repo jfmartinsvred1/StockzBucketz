@@ -8,7 +8,7 @@ type RegisterStockProps = {
 };
 
 const RegisterStock: React.FC<RegisterStockProps> = ({ stocksClient, returnToMyStocks }) => {
-  const html= (
+  return (
     <div onClick={(e)=>returnToMyStocks()} className="newStock d-flex align-items-center justify-content-center">
       <div className="bg-white p-5" onClick={(e)=>e.stopPropagation()}>
         <label htmlFor="exampleDataList" className="form-label text-secondary">Digite o código do ativo que queira cadastrar</label>
@@ -18,6 +18,20 @@ const RegisterStock: React.FC<RegisterStockProps> = ({ stocksClient, returnToMyS
           id="exampleDataList"
           placeholder="Encontre Um Ativo"
         />
+        <div className='d-flex justify-content-around gap-3 pt-3'>
+            <div className='d-flex flex-column'>
+                <label htmlFor="date" className='text-secondary'>Data</label>
+                <input type="date" id='date'/>
+            </div>
+            <div className='d-flex flex-column'>
+                <label htmlFor="amount" className='text-secondary'>Quantidade</label>
+                <input type="number" id='amount' min={1}/>
+            </div>
+            <div className='d-flex flex-column'>
+                <label htmlFor="unitPrice" className='text-secondary'>Preço Unitário</label>
+                <input type="text" id='unitPrice'/>
+            </div>
+        </div>
         <datalist id="datalistOptions">
           {stocksClient.map((stock,index)=>(
             <option value={stock.code}>{stock.code}</option>
@@ -26,7 +40,6 @@ const RegisterStock: React.FC<RegisterStockProps> = ({ stocksClient, returnToMyS
       </div>
     </div>
   );
-  return html;
 };
 
 export default RegisterStock;
