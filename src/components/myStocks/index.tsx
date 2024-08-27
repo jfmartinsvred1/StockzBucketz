@@ -1,15 +1,8 @@
+import { useState } from 'react';
 import './myStockets.css'
+import RegisterStock from '../registerStock/index';
+import { Stock } from '../../Stock';
 const MyStocks = () => {
-    type Stock = {
-        id:number,
-        code: string,
-        currentPrice: number,
-        amount: number,
-        value: number,
-        cost: number,
-        mediumPrice: number,
-        earnings: number
-    }
     const stocks: Stock[] = [
         {
             id:1,
@@ -69,6 +62,16 @@ const MyStocks = () => {
         accumulatedEarnings: 800.50,
         profit: 2017.00
     }
+    const [showRegisterStock,setShowRegisterStock] = useState(false)
+
+    function handlerRegisterStock(){
+        setShowRegisterStock(true)
+    }
+
+    function returnToMyStocks(){
+        setShowRegisterStock(false)
+    }
+
     return (
         <div className="d-flex p-5 bg-light gap-5 w-100">
             <div className=" myStockets w-100 d-flex flex-column justify-content-around bg-white p-4 shadow p-3 mb-5 bg-body-tertiary rounded">
@@ -90,7 +93,7 @@ const MyStocks = () => {
                 </div>
                 <div className="d-flex align-items- justify-content-center gap-3">
                     <button className='btn-newStock'>Novo Ativo</button>
-                    <button className='btn-registeStock'>Cadastrar Ativo</button>
+                    <button onClick={(e)=>{handlerRegisterStock()}} className='btn-registeStock'>Cadastrar Ativo</button>
                 </div>
             </div>
             <div className='d-flex flex-column w-75'>
@@ -126,7 +129,9 @@ const MyStocks = () => {
                 </div>
 
             </div>
+            {showRegisterStock && <RegisterStock stocksClient={stocks} returnToMyStocks={returnToMyStocks}/>}
         </div>
+        
     )
 }
 export default MyStocks

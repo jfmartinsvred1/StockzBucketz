@@ -51,7 +51,7 @@ describe('Login', ()=>{
 
     const email = screen.getByTestId('email');
 
-    await userEvent.type(email,"anyValue");
+    userEvent.type(email,"anyValue");
 
     const requiredError = screen.queryByTestId('email-invalid');
     expect(requiredError).not.toBeNull();
@@ -110,13 +110,7 @@ describe('Login', ()=>{
     authService.response = Promise.resolve({}as any);
     renderLoginPage()
 
-    const email = screen.getByTestId('email');
-    userEvent.type(email, "valid@gmail.com");
-    const password = screen.getByTestId('password');
-    userEvent.type(password,"anyValue")
-
-    const loginButton = screen.getByTestId('btn-login');
-    userEvent.click(loginButton);
+    effectLogin()
 
     await waitFor(()=>expect(authService.isLoggingIn).toBeTruthy());
   })
@@ -125,13 +119,7 @@ describe('Login', ()=>{
     authService.response = Promise.resolve({}as any);
     renderLoginPage()
 
-    const email = screen.getByTestId('email');
-    userEvent.type(email, "valid@gmail.com");
-    const password = screen.getByTestId('password');
-    userEvent.type(password,"anyValue")
-
-    const loginButton = screen.getByTestId('btn-login');
-    userEvent.click(loginButton);
+    effectLogin()
 
     await waitFor(()=>expect(window.location.pathname).toEqual('/myStocks'));
   })
@@ -140,13 +128,7 @@ describe('Login', ()=>{
     authService.response = Promise.reject({message:'error'});
     renderLoginPage()
 
-    const email = screen.getByTestId('email');
-    userEvent.type(email, "valid@gmail.com");
-    const password = screen.getByTestId('password');
-    userEvent.type(password,"anyValue")
-
-    const loginButton = screen.getByTestId('btn-login');
-    userEvent.click(loginButton);
+    effectLogin()
 
     expect(await screen.findByTestId('error')).not.toBeNull();
   })
@@ -155,13 +137,7 @@ describe('Login', ()=>{
     authService.response = Promise.resolve({}as any);
     renderLoginPage()
 
-    const email = screen.getByTestId('email');
-    userEvent.type(email, "valid@gmail.com");
-    const password = screen.getByTestId('password');
-    userEvent.type(password,"anyValue")
-
-    const loginButton = screen.getByTestId('btn-login');
-    userEvent.click(loginButton);
+    effectLogin()
 
     expect(await screen.findByTestId('loading')).not.toBeNull();
   })
@@ -169,13 +145,7 @@ describe('Login', ()=>{
     authService.response = Promise.resolve({}as any);
     renderLoginPage()
 
-    const email = screen.getByTestId('email');
-    userEvent.type(email, "valid@gmail.com");
-    const password = screen.getByTestId('password');
-    userEvent.type(password,"anyValue")
-
-    const loginButton = screen.getByTestId('btn-login');
-    userEvent.click(loginButton);
+    effectLogin()
  
     await waitFor(()=> expect(screen.queryByTestId('loading')).toBeNull());
   })
@@ -183,13 +153,7 @@ describe('Login', ()=>{
     authService.response = Promise.reject({message:'error'});
     renderLoginPage()
 
-    const email = screen.getByTestId('email');
-    userEvent.type(email, "valid@gmail.com");
-    const password = screen.getByTestId('password');
-    userEvent.type(password,"anyValue")
-
-    const loginButton = screen.getByTestId('btn-login');
-    userEvent.click(loginButton);
+    effectLogin()
  
     await waitFor(()=> expect(screen.queryByTestId('loading')).toBeNull());
   })
@@ -199,6 +163,36 @@ describe('Login', ()=>{
             <Login authService={authService as AuthService}/>
         </BrowserRouter>
     )
+  }
+  //Valid:true Invalid:false
+  function fillInEmail(valid:boolean){
+    if(valid){
+      const email = screen.getByTestId('email');
+      userEvent.type(email, "valid@gmail.com");
+    }
+    else{
+      const email = screen.getByTestId('email');
+      userEvent.type(email,"anyValue");
+    }
+  }
+  //Valid:true Invalid:false
+  function fillInPassword(valid:boolean){
+    if(valid){
+      const password = screen.getByTestId('password');
+      userEvent.type(password, "valid");
+    }
+    else{
+      const password = screen.getByTestId('password');
+      userEvent.type(password,"");
+    }
+  }
+
+  function effectLogin(){
+    fillInEmail(true)
+    fillInPassword(true)
+
+    const loginButton = screen.getByTestId('btn-login');
+    userEvent.click(loginButton);
   }
 
   class AuthServiceMock{
