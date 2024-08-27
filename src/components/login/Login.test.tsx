@@ -151,6 +151,48 @@ describe('Login', ()=>{
     expect(await screen.findByTestId('error')).not.toBeNull();
   })
 
+  test('given user clicks on login button, then show loading',async ()=>{
+    authService.response = Promise.resolve({}as any);
+    renderLoginPage()
+
+    const email = screen.getByTestId('email');
+    userEvent.type(email, "valid@gmail.com");
+    const password = screen.getByTestId('password');
+    userEvent.type(password,"anyValue")
+
+    const loginButton = screen.getByTestId('btn-login');
+    userEvent.click(loginButton);
+
+    expect(await screen.findByTestId('loading')).not.toBeNull();
+  })
+  test('given user clicks on login button,when sucess, then hide loading',async ()=>{
+    authService.response = Promise.resolve({}as any);
+    renderLoginPage()
+
+    const email = screen.getByTestId('email');
+    userEvent.type(email, "valid@gmail.com");
+    const password = screen.getByTestId('password');
+    userEvent.type(password,"anyValue")
+
+    const loginButton = screen.getByTestId('btn-login');
+    userEvent.click(loginButton);
+ 
+    await waitFor(()=> expect(screen.queryByTestId('loading')).toBeNull());
+  })
+  test('given user clicks on login button,when fail, then hide loading',async ()=>{
+    authService.response = Promise.reject({message:'error'});
+    renderLoginPage()
+
+    const email = screen.getByTestId('email');
+    userEvent.type(email, "valid@gmail.com");
+    const password = screen.getByTestId('password');
+    userEvent.type(password,"anyValue")
+
+    const loginButton = screen.getByTestId('btn-login');
+    userEvent.click(loginButton);
+ 
+    await waitFor(()=> expect(screen.queryByTestId('loading')).toBeNull());
+  })
   function renderLoginPage(){
     render(
         <BrowserRouter>

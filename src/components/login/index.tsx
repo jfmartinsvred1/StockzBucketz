@@ -3,10 +3,13 @@ import { isEmailValid } from "../../helpers/emailHelper";
 import ValidationError from "../validationError";
 import { useNavigate } from "react-router-dom";
 import AuthService from "../../services/AuthService";
+import Loading from "../loading";
 
 type LoginPageProps = {
   authService: AuthService;
 };
+
+
 
 const Login = (props: LoginPageProps) => {
   const [form, setForm] = useState({
@@ -20,6 +23,8 @@ const Login = (props: LoginPageProps) => {
     },
   });
   
+  const [showLoading,setShowLoading]=useState(false);
+
   const [error, setError]=useState(null as any);
 
   const navigate = useNavigate();
@@ -30,9 +35,16 @@ const Login = (props: LoginPageProps) => {
 
   async function login(e:React.FormEvent) {
     e.preventDefault()
+    setShowLoading(true);
     await props.authService.login(form.email.value, form.password.value)
-    .then(()=>{navigate('/myStocks')})
-    .catch((err)=>setError(err));
+    .then(()=>{
+      setShowLoading(false);
+      navigate('/myStocks');
+    })
+    .catch((err)=>{
+      setShowLoading(false)
+      setError(err)
+    });
   }
 
   return (
@@ -112,6 +124,7 @@ const Login = (props: LoginPageProps) => {
           </div>
         </form>
       </div>
+      { showLoading && <Loading/>}
     </div>
   );
 };
