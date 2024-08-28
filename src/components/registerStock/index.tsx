@@ -40,7 +40,6 @@ const RegisterStock: React.FC<RegisterStockProps> = ({ stocksClient, returnToMyS
       unitPrice:Number(form.unitPrice.value)
     }
     updateStocks(newStockRegister)
-    calculateInvestorData()
     returnToMyStocks()
   }
 

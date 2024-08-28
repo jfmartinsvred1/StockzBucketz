@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './myStockets.css'
 import RegisterStock from '../registerStock/index';
 import { MyStock, NewStock, StockApi } from '../../models/Stock';
@@ -42,6 +42,11 @@ const MyStocks: React.FC<MyStocksProps>  = ({setMyStockss,myStockss}) => {
         }
         setShowRegisterStock(true)
     }
+
+    useEffect(() => {
+        calculateInvestorData();
+    }, [myStockss]);
+    
     function calculateInvestorData(){
         const data={
             profitability: 0,
@@ -59,8 +64,8 @@ const MyStocks: React.FC<MyStocksProps>  = ({setMyStockss,myStockss}) => {
         setInvestorData(data)
     }
     function returnToMyStocks() {
-        setShowRegisterStock(false)
         calculateInvestorData()
+        setShowRegisterStock(false)
     }
 
     function updateStocks(newRegister: NewStock) {
@@ -100,10 +105,11 @@ const MyStocks: React.FC<MyStocksProps>  = ({setMyStockss,myStockss}) => {
                 0
             );
     
-            setMyStockss([...myStockss, newStock]); 
+            setMyStockss([...myStockss, newStock]);
         } else {
             console.error(`Stock price for ${newRegister.code} not found`);
         }
+        calculateInvestorData()
     }
     
     
@@ -112,7 +118,7 @@ const MyStocks: React.FC<MyStocksProps>  = ({setMyStockss,myStockss}) => {
         <div className="d-flex p-5 bg-light gap-5 w-100">
             <div className=" myStockets w-100 d-flex flex-column justify-content-around bg-white p-4 shadow p-3 mb-5 bg-body-tertiary rounded">
                 <div className="d-flex flex-column align-items-center justify-content-center">
-                    <h1 className='text-primary'>{investorData.profitability.toFixed(2) + "%"}</h1>
+                    <h1 className='text-primary'>{investorData.profitability.toFixed(2) }{"%"}</h1>
                     <h6 className='text-secondary'>Rentabilidade Atual</h6>
                 </div>
                 <div className="d-flex align-items- justify-content-between">
@@ -149,7 +155,11 @@ const MyStocks: React.FC<MyStocksProps>  = ({setMyStockss,myStockss}) => {
                         </thead>
                         <tbody>
                             {myStockss.map((stock, index) => (
-                                <Stock key={index} id={index} stock={stock}/>
+                                <Stock 
+                                    key={index} 
+                                    id={index} 
+                                    stock={stock}
+                                />
                             ))}
                         </tbody>
                     </table>
