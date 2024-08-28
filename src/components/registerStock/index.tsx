@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Stock } from '../../Stock';
 import './registerStock.css';
-import { NewStock } from '../../models/Stock';
+import { NewStock, StockApi } from '../../models/Stock';
 
 type RegisterStockProps = {
-  stocksClient: Stock[];
+  stocksClient:StockApi[];
   returnToMyStocks:()=>void
   updateStocks:(addStock:NewStock)=>void
 };
@@ -75,7 +75,7 @@ const RegisterStock: React.FC<RegisterStockProps> = ({ stocksClient, returnToMyS
         </div>
         <datalist id="datalistOptions">
           {stocksClient.map((stock,index)=>(
-            <option value={stock.code}>{stock.code}</option>
+            <option value={stock.stock}>{stock.stock}</option>
           ))}
         </datalist>
       </div>

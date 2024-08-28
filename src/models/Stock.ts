@@ -4,6 +4,18 @@ export type NewStock={
       amount:number,
       unitPrice:number
 }
+export type StockApi={
+    change:number,
+    close:number,
+    log:string
+    market_cap:number,
+    name:string,
+    sector:string,
+    stock:string,
+    type:string,
+    volume:number
+
+}
 
 export class MyStock {
     public id: number;

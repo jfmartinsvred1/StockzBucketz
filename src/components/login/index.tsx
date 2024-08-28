@@ -4,6 +4,7 @@ import ValidationError from "../validationError";
 import { useNavigate } from "react-router-dom";
 import AuthService from "../../services/AuthService";
 import Loading from "../loading";
+import { fetchStockData } from "../../services/ApiBrapiService";
 
 type LoginPageProps = {
   authService: AuthService;
@@ -36,10 +37,12 @@ const Login = (props: LoginPageProps) => {
   async function login(e:React.FormEvent) {
     e.preventDefault()
     setShowLoading(true);
+    await fetchStockData()
     await props.authService.login(form.email.value, form.password.value)
     .then(()=>{
       setShowLoading(false);
       navigate('/myStocks');
+      
     })
     .catch((err)=>{
       setShowLoading(false)

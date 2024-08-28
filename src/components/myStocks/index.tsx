@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import './myStockets.css'
 import RegisterStock from '../registerStock/index';
-import { MyStock, NewStock } from '../../models/Stock';
+import { MyStock, NewStock, StockApi } from '../../models/Stock';
+import { fetchStockData } from '../../services/ApiBrapiService';
 const MyStocks = () => {
     const [myStocks, setMyStocks] = useState([
         {
@@ -62,9 +63,27 @@ const MyStocks = () => {
         accumulatedEarnings: 800.50,
         profit: 2017.00
     }
+
+    const [allStocks,setAllStocks]=useState([
+        {
+            change:0,
+            close:0,
+            log:"",
+            market_cap:0,
+            name:"",
+            sector:"",
+            stock:"",
+            type:"",
+            volume:0
+        }
+    ])
     const [showRegisterStock, setShowRegisterStock] = useState(false)
 
-    function handlerRegisterStock() {
+    async function handlerRegisterStock() {
+        if(allStocks.length<1){
+            const data:StockApi[] = await fetchStockData()
+            setAllStocks(data)
+        }
         setShowRegisterStock(true)
     }
 
@@ -79,7 +98,7 @@ const MyStocks = () => {
             const updatedStock = new MyStock(
                 existingStock.id,
                 newRegister.code,
-                newRegister.unitPrice,
+                existingStock.currentPrice,
                 existingStock.amount + newRegister.amount,
                 existingStock.mediumPrice,
                 existingStock.earnings
@@ -112,8 +131,6 @@ const MyStocks = () => {
 
             setMyStocks([...myStocks, newStock]);
         }
-
-        console.log(newRegister);
     }
 
     return (
@@ -160,11 +177,11 @@ const MyStocks = () => {
                                 <tr key={index}>
                                     <th scope="row text-dark">{index + 1}</th>
                                     <td className='text-secondary'>{stock.code}</td>
-                                    <td className='text-secondary'>{stock.currentPrice}</td>
+                                    <td className='text-secondary'>{stock.currentPrice.toFixed(2)}</td>
                                     <td className='text-secondary'>{stock.amount}</td>
                                     <td className='text-secondary'>{stock.value}</td>
                                     <td className='text-secondary'>{stock.cost}</td>
-                                    <td className='text-secondary'>{stock.mediumPrice}</td>
+                                    <td className='text-secondary'>{stock.mediumPrice.toFixed(2)}</td>
                                 </tr>
                             ))}
                         </tbody>
@@ -173,7 +190,7 @@ const MyStocks = () => {
                 </div>
 
             </div>
-            {showRegisterStock && <RegisterStock updateStocks={updateStocks} stocksClient={myStocks} returnToMyStocks={returnToMyStocks} />}
+            {showRegisterStock && <RegisterStock updateStocks={updateStocks} stocksClient={allStocks} returnToMyStocks={returnToMyStocks} />}
         </div>
 
     )
