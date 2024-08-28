@@ -3,67 +3,23 @@ import './myStockets.css'
 import RegisterStock from '../registerStock/index';
 import { MyStock, NewStock, StockApi } from '../../models/Stock';
 import { fetchStockData } from '../../services/ApiBrapiService';
-const MyStocks = () => {
-    const [myStocks, setMyStocks] = useState([
-        {
-            id: 1,
-            code: "BBDC4",
-            currentPrice: 25.00,
-            amount: 100,
-            value: 2500.00,
-            cost: 2300.00,
-            mediumPrice: 23.00,
-            earnings: 200.00
-        },
-        {
-            id: 2,
-            code: "ITUB4",
-            currentPrice: 27.00,
-            amount: 50,
-            value: 1350.00,
-            cost: 1250.00,
-            mediumPrice: 25.00,
-            earnings: 100.00
-        },
-        {
-            id: 3,
-            code: "PETR4",
-            currentPrice: 30.00,
-            amount: 80,
-            value: 2400.00,
-            cost: 2200.00,
-            mediumPrice: 27.50,
-            earnings: 200.00
-        },
-        {
-            id: 4,
-            code: "VALE3",
-            currentPrice: 90.00,
-            amount: 30,
-            value: 2700.00,
-            cost: 2550.00,
-            mediumPrice: 85.00,
-            earnings: 150.00
-        },
-        {
-            id: 5,
-            code: "ABEV3",
-            currentPrice: 18.00,
-            amount: 150,
-            value: 2700.00,
-            cost: 2550.00,
-            mediumPrice: 17.00,
-            earnings: 150.00
-        }
-    ])
-    const dataBucket = {
-        profitability: 5.99,
-        patrimony: 5987.54,
-        acquisitionCost: 3970.54,
-        accumulatedEarnings: 800.50,
-        profit: 2017.00
-    }
+import Stock from '../stock';
 
+type MyStocksProps = {
+    setMyStockss: (add: MyStock[]) => void;
+    myStockss: MyStock[]; // Corrigido aqui
+};
+
+
+const MyStocks: React.FC<MyStocksProps>  = ({setMyStockss,myStockss}) => {
+
+    const [investorData, setInvestorData]=useState({
+        profitability: 0,
+        patrimony: 0,
+        acquisitionCost: 0,
+        accumulatedEarnings: 0,
+        profit: 0
+    })
     const [allStocks,setAllStocks]=useState([
         {
             change:0,
@@ -80,21 +36,38 @@ const MyStocks = () => {
     const [showRegisterStock, setShowRegisterStock] = useState(false)
 
     async function handlerRegisterStock() {
-        if(allStocks.length<1){
+        if(allStocks.length===1){
             const data:StockApi[] = await fetchStockData()
             setAllStocks(data)
         }
         setShowRegisterStock(true)
     }
-
+    function calculateInvestorData(){
+        const data={
+            profitability: 0,
+            patrimony: 0,
+            acquisitionCost: 0,
+            accumulatedEarnings: 0,
+            profit: 0
+        }
+        myStockss.map((s)=>(
+            data.patrimony+=s.value,
+            data.acquisitionCost+=s.cost
+        ))
+        data.profit= data.patrimony - data.acquisitionCost;
+        data.profitability= ((data.profit/data.acquisitionCost)*100)
+        setInvestorData(data)
+    }
     function returnToMyStocks() {
         setShowRegisterStock(false)
+        calculateInvestorData()
     }
 
     function updateStocks(newRegister: NewStock) {
-        const existingStock = myStocks.find((s) => s.code === newRegister.code);
-
-        if(existingStock) {
+        const existingStock = myStockss.find((s) => s.code === newRegister.code);
+        const stockPrice = allStocks.find((s) => s.stock === newRegister.code);
+        
+        if (existingStock && stockPrice) {
             const updatedStock = new MyStock(
                 existingStock.id,
                 newRegister.code,
@@ -103,57 +76,59 @@ const MyStocks = () => {
                 existingStock.mediumPrice,
                 existingStock.earnings
             );
-
+    
             updatedStock.AddNew(
                 newRegister.amount,
                 newRegister.unitPrice,
                 existingStock.cost,
                 existingStock.amount
             );
-
-            const updatedStocks = myStocks.map(stock =>
+    
+            const updatedStocks = myStockss.map(stock =>
                 stock.code === newRegister.code ? updatedStock : stock
             );
-
-            setMyStocks(updatedStocks);
+    
+            setMyStockss(updatedStocks);
             returnToMyStocks();
-        }
-        else
-        {
+        } else if (stockPrice) {
             const newStock = new MyStock(
-                myStocks.length + 1,
+                myStockss.length + 1,
                 newRegister.code,
-                newRegister.unitPrice,
+                Number(stockPrice.close.toFixed(2)), 
                 newRegister.amount,
                 newRegister.unitPrice,
                 0
             );
-
-            setMyStocks([...myStocks, newStock]);
+    
+            setMyStockss([...myStockss, newStock]); 
+        } else {
+            console.error(`Stock price for ${newRegister.code} not found`);
         }
     }
+    
+    
 
     return (
         <div className="d-flex p-5 bg-light gap-5 w-100">
             <div className=" myStockets w-100 d-flex flex-column justify-content-around bg-white p-4 shadow p-3 mb-5 bg-body-tertiary rounded">
                 <div className="d-flex flex-column align-items-center justify-content-center">
-                    <h1 className='text-primary'>{dataBucket.profitability + "%"}</h1>
+                    <h1 className='text-primary'>{investorData.profitability.toFixed(2) + "%"}</h1>
                     <h6 className='text-secondary'>Rentabilidade Atual</h6>
                 </div>
                 <div className="d-flex align-items- justify-content-between">
                     <h6 className='text-secondary'>Patrimônio</h6>
-                    <h6>{dataBucket.patrimony}</h6>
+                    <h6>{investorData.patrimony.toFixed(2)}</h6>
                 </div>
                 <div className="d-flex align-items- justify-content-between">
                     <h6 className='text-secondary'>Custo de aquisição</h6>
-                    <h6>{dataBucket.acquisitionCost}</h6>
+                    <h6>{investorData.acquisitionCost.toFixed(2)}</h6>
                 </div>
                 <div className="d-flex align-items- justify-content-between">
                     <h6 className='text-secondary'>Lucro</h6>
-                    <h6 className='text-primary'>{dataBucket.profit}</h6>
+                    <h6 className='text-primary'>{investorData.profit.toFixed(2)}</h6>
                 </div>
                 <div className="d-flex align-items- justify-content-center gap-3">
-                    <button className='btn-newStock'>Novo Ativo</button>
+                    <button onClick={(e)=>calculateInvestorData()} className='btn-newStock'>Novo Ativo</button>
                     <button onClick={(e) => { handlerRegisterStock() }} className='btn-registeStock'>Cadastrar Ativo</button>
                 </div>
             </div>
@@ -173,16 +148,8 @@ const MyStocks = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {myStocks.map((stock, index) => (
-                                <tr key={index}>
-                                    <th scope="row text-dark">{index + 1}</th>
-                                    <td className='text-secondary'>{stock.code}</td>
-                                    <td className='text-secondary'>{stock.currentPrice.toFixed(2)}</td>
-                                    <td className='text-secondary'>{stock.amount}</td>
-                                    <td className='text-secondary'>{stock.value}</td>
-                                    <td className='text-secondary'>{stock.cost}</td>
-                                    <td className='text-secondary'>{stock.mediumPrice.toFixed(2)}</td>
-                                </tr>
+                            {myStockss.map((stock, index) => (
+                                <Stock key={index} id={index} stock={stock}/>
                             ))}
                         </tbody>
                     </table>
@@ -190,7 +157,7 @@ const MyStocks = () => {
                 </div>
 
             </div>
-            {showRegisterStock && <RegisterStock updateStocks={updateStocks} stocksClient={allStocks} returnToMyStocks={returnToMyStocks} />}
+            {showRegisterStock && <RegisterStock calculateInvestorData={calculateInvestorData} updateStocks={updateStocks} stocksClient={allStocks} returnToMyStocks={returnToMyStocks} />}
         </div>
 
     )

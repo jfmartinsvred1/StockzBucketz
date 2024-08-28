@@ -5,11 +5,12 @@ import { NewStock, StockApi } from '../../models/Stock';
 
 type RegisterStockProps = {
   stocksClient:StockApi[];
-  returnToMyStocks:()=>void
-  updateStocks:(addStock:NewStock)=>void
+  returnToMyStocks:()=>void;
+  updateStocks:(addStock:NewStock)=>void;
+  calculateInvestorData:()=>void;
 };
 
-const RegisterStock: React.FC<RegisterStockProps> = ({ stocksClient, returnToMyStocks,updateStocks }) => {
+const RegisterStock: React.FC<RegisterStockProps> = ({ stocksClient, returnToMyStocks,updateStocks,calculateInvestorData }) => {
 
   const [form,setForm]=useState({
     code:{
@@ -39,6 +40,8 @@ const RegisterStock: React.FC<RegisterStockProps> = ({ stocksClient, returnToMyS
       unitPrice:Number(form.unitPrice.value)
     }
     updateStocks(newStockRegister)
+    calculateInvestorData()
+    returnToMyStocks()
   }
 
 
@@ -75,7 +78,7 @@ const RegisterStock: React.FC<RegisterStockProps> = ({ stocksClient, returnToMyS
         </div>
         <datalist id="datalistOptions">
           {stocksClient.map((stock,index)=>(
-            <option value={stock.stock}>{stock.stock}</option>
+            <option key={index} value={stock.stock}>{stock.stock}</option>
           ))}
         </datalist>
       </div>
