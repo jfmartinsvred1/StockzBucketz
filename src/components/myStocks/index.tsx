@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import './myStockets.css'
 import RegisterStock from '../registerStock/index';
-import { Stock } from '../../Stock';
+import { MyStock, NewStock } from '../../models/Stock';
 const MyStocks = () => {
-    const stocks: Stock[] = [
+    const [myStocks, setMyStocks] = useState([
         {
-            id:1,
+            id: 1,
             code: "BBDC4",
             currentPrice: 25.00,
             amount: 100,
@@ -15,7 +15,7 @@ const MyStocks = () => {
             earnings: 200.00
         },
         {
-            id:2,
+            id: 2,
             code: "ITUB4",
             currentPrice: 27.00,
             amount: 50,
@@ -25,7 +25,7 @@ const MyStocks = () => {
             earnings: 100.00
         },
         {
-            id:3,
+            id: 3,
             code: "PETR4",
             currentPrice: 30.00,
             amount: 80,
@@ -35,7 +35,7 @@ const MyStocks = () => {
             earnings: 200.00
         },
         {
-            id:4,
+            id: 4,
             code: "VALE3",
             currentPrice: 90.00,
             amount: 30,
@@ -45,7 +45,7 @@ const MyStocks = () => {
             earnings: 150.00
         },
         {
-            id:5,
+            id: 5,
             code: "ABEV3",
             currentPrice: 18.00,
             amount: 150,
@@ -54,7 +54,7 @@ const MyStocks = () => {
             mediumPrice: 17.00,
             earnings: 150.00
         }
-    ];
+    ])
     const dataBucket = {
         profitability: 5.99,
         patrimony: 5987.54,
@@ -62,14 +62,58 @@ const MyStocks = () => {
         accumulatedEarnings: 800.50,
         profit: 2017.00
     }
-    const [showRegisterStock,setShowRegisterStock] = useState(false)
+    const [showRegisterStock, setShowRegisterStock] = useState(false)
 
-    function handlerRegisterStock(){
+    function handlerRegisterStock() {
         setShowRegisterStock(true)
     }
 
-    function returnToMyStocks(){
+    function returnToMyStocks() {
         setShowRegisterStock(false)
+    }
+
+    function updateStocks(newRegister: NewStock) {
+        const existingStock = myStocks.find((s) => s.code === newRegister.code);
+
+        if(existingStock) {
+            const updatedStock = new MyStock(
+                existingStock.id,
+                newRegister.code,
+                newRegister.unitPrice,
+                existingStock.amount + newRegister.amount,
+                existingStock.mediumPrice,
+                existingStock.earnings
+            );
+
+            updatedStock.AddNew(
+                newRegister.amount,
+                newRegister.unitPrice,
+                existingStock.cost,
+                existingStock.amount
+            );
+
+            const updatedStocks = myStocks.map(stock =>
+                stock.code === newRegister.code ? updatedStock : stock
+            );
+
+            setMyStocks(updatedStocks);
+            returnToMyStocks();
+        }
+        else
+        {
+            const newStock = new MyStock(
+                myStocks.length + 1,
+                newRegister.code,
+                newRegister.unitPrice,
+                newRegister.amount,
+                newRegister.unitPrice,
+                0
+            );
+
+            setMyStocks([...myStocks, newStock]);
+        }
+
+        console.log(newRegister);
     }
 
     return (
@@ -93,7 +137,7 @@ const MyStocks = () => {
                 </div>
                 <div className="d-flex align-items- justify-content-center gap-3">
                     <button className='btn-newStock'>Novo Ativo</button>
-                    <button onClick={(e)=>{handlerRegisterStock()}} className='btn-registeStock'>Cadastrar Ativo</button>
+                    <button onClick={(e) => { handlerRegisterStock() }} className='btn-registeStock'>Cadastrar Ativo</button>
                 </div>
             </div>
             <div className='d-flex flex-column w-75'>
@@ -112,9 +156,9 @@ const MyStocks = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {stocks.map((stock,index) => (
-                                <tr>
-                                    <th scope="row text-dark">{index+1}</th>
+                            {myStocks.map((stock, index) => (
+                                <tr key={index}>
+                                    <th scope="row text-dark">{index + 1}</th>
                                     <td className='text-secondary'>{stock.code}</td>
                                     <td className='text-secondary'>{stock.currentPrice}</td>
                                     <td className='text-secondary'>{stock.amount}</td>
@@ -129,9 +173,9 @@ const MyStocks = () => {
                 </div>
 
             </div>
-            {showRegisterStock && <RegisterStock stocksClient={stocks} returnToMyStocks={returnToMyStocks}/>}
+            {showRegisterStock && <RegisterStock updateStocks={updateStocks} stocksClient={myStocks} returnToMyStocks={returnToMyStocks} />}
         </div>
-        
+
     )
 }
 export default MyStocks
