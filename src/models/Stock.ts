@@ -27,29 +27,25 @@ export class MyStock {
     public value: number;
     public cost: number;
 
-    public constructor(id: number, code:string, currentPrice:number,amount:number,mediumPrice:number,earnings:number) {
+    public constructor(id: number, code: string, currentPrice: number, amount: number, mediumPrice: number, earnings: number) {
         this.id = id;
-        this.code=code;
-        this.currentPrice=currentPrice;
-        this.amount=amount;
-        this.value=this.currentPrice*amount;
-        this.mediumPrice=mediumPrice;
-        this.cost=this.mediumPrice*amount;
-        this.earnings=earnings;
+        this.code = code;
+        this.currentPrice = currentPrice;
+        this.amount = amount;
+        this.value = this.currentPrice * amount;
+        this.mediumPrice = mediumPrice;
+        this.cost = this.mediumPrice * amount;
+        this.earnings = earnings;
     }
 
-    public AddNew(amount:number,unitPrice:number,oldCost:number, amountOld:number){
-        const buyCost=amount*unitPrice
-        const newCost=buyCost+oldCost
-        const newAmount=amount+amountOld
+    public AddNew(amount: number, unitPrice: number, oldCost: number, amountOld: number) {
+        const buyCost = amount * unitPrice;
+        const newCost = buyCost + oldCost;
+        const newAmount = amount + amountOld;
+        const average = newCost / newAmount;
 
-        const average = newCost/newAmount
-
-        this.amount=newAmount
-        this.mediumPrice=average
-        this.cost=newCost
+        this.amount = newAmount;
+        this.mediumPrice = average;
+        this.cost = newCost;
     }
-
-    
-    
 }
