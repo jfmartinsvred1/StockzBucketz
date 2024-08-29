@@ -4,6 +4,7 @@ import RegisterStock from '../registerStock/index';
 import { MyStock, NewStock, StockApi } from '../../models/Stock';
 import { fetchStockData } from '../../services/ApiBrapiService';
 import Stock from '../stock';
+import Loading from '../loading';
 
 type MyStocksProps = {
     setMyStockss: (add: MyStock[]) => void;
@@ -19,7 +20,7 @@ const MyStocks: React.FC<MyStocksProps>  = ({setMyStockss,myStockss}) => {
         acquisitionCost: 0,
         accumulatedEarnings: 0,
         profit: 0
-    })
+    });
     const [allStocks,setAllStocks]=useState([
         {
             change:0,
@@ -32,16 +33,22 @@ const MyStocks: React.FC<MyStocksProps>  = ({setMyStockss,myStockss}) => {
             type:"",
             volume:0
         }
-    ])
-    const [showRegisterStock, setShowRegisterStock] = useState(false)
+    ]);
+    const [showLoading, setShowLoading]=useState(false)
+    const [showRegisterStock, setShowRegisterStock] = useState(false);
 
     async function handlerRegisterStock() {
+        setShowLoading(true)
         if(allStocks.length===1){
             const data:StockApi[] = await fetchStockData()
             setAllStocks(data)
         }
+        setShowLoading(false)
         setShowRegisterStock(true)
+
     }
+
+
 
     useEffect(() => {
         calculateInvestorData();
@@ -60,7 +67,12 @@ const MyStocks: React.FC<MyStocksProps>  = ({setMyStockss,myStockss}) => {
             data.acquisitionCost+=s.cost
         ))
         data.profit= data.patrimony - data.acquisitionCost;
-        data.profitability= ((data.profit/data.acquisitionCost)*100)
+        if(data.profit===0){
+            data.profitability=0
+        }
+        else{
+            data.profitability= ((data.profit/data.acquisitionCost)*100)
+        }
         setInvestorData(data)
     }
     function returnToMyStocks() {
@@ -167,6 +179,7 @@ const MyStocks: React.FC<MyStocksProps>  = ({setMyStockss,myStockss}) => {
                 </div>
 
             </div>
+            {showLoading && <Loading/>}
             {showRegisterStock && <RegisterStock calculateInvestorData={calculateInvestorData} updateStocks={updateStocks} stocksClient={allStocks} returnToMyStocks={returnToMyStocks} />}
         </div>
 

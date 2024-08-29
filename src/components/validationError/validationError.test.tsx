@@ -4,6 +4,7 @@ import ValidationError from "."
 describe('ValidationError',()=>{
     test('given value not changed, then return null',()=>{
         render(<ValidationError
+            lastEmail=""
             errorMessage="anyErroMessage"
             hasChagend={false}
             type="email"
@@ -14,6 +15,7 @@ describe('ValidationError',()=>{
     })
     test('given valor is mandatory, when value is empty, then return error',()=>{
         render(<ValidationError
+            lastEmail=""
             errorMessage="anyErroMessage"
             hasChagend={true}
             testId="error"
@@ -25,6 +27,7 @@ describe('ValidationError',()=>{
     
     test('given valor is mandatory, when value is not empty, then return null',()=>{
         render(<ValidationError
+            lastEmail=""
             errorMessage="anyErroMessage"
             hasChagend={true}
             testId="error"
@@ -36,6 +39,7 @@ describe('ValidationError',()=>{
 
     test('given error is email, when value invalid, then return error',()=>{
         render(<ValidationError
+            lastEmail=""
             errorMessage="anyErroMessage"
             hasChagend={true}
             testId="error"
@@ -46,6 +50,7 @@ describe('ValidationError',()=>{
     })
     test('given error is email, when value is valid, then return null',()=>{
         render(<ValidationError
+            lastEmail=""
             errorMessage="anyErroMessage"
             hasChagend={true}
             testId="error"

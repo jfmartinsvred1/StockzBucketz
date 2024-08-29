@@ -14,4 +14,10 @@ export default class AuthService{
             return Promise.reject(error)
         })
     }
+    
+        async register(email:string,password:string){
+        return firebaseAuth.createUserWithEmailAndPassword(
+            auth,email,password
+        )
+    }
 }

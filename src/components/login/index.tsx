@@ -37,7 +37,6 @@ const Login = (props: LoginPageProps) => {
   async function login(e:React.FormEvent) {
     e.preventDefault()
     setShowLoading(true);
-    await fetchStockData()
     await props.authService.login(form.email.value, form.password.value)
     .then(()=>{
       setShowLoading(false);
@@ -73,9 +72,11 @@ const Login = (props: LoginPageProps) => {
               errorMessage="Email é obrigatório"
               testId="email-required"
               type="required"
+              lastEmail=""
               value={form.email.value}
             />
             <ValidationError
+              lastEmail=""
               hasChagend={form.email.hasChanged}
               errorMessage="Email inválido"
               testId="email-invalid"
@@ -100,6 +101,7 @@ const Login = (props: LoginPageProps) => {
               data-testid="password"
             />
             <ValidationError
+              lastEmail=""
               hasChagend={form.password.hasChanged}
               errorMessage="Senha é obrigatória"
               testId="password-required"
