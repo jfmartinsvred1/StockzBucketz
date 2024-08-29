@@ -1,29 +1,38 @@
 import { isEmailValid } from "../../helpers/emailHelper"
 type ValidationErrorProps = {
-    errorMessage:string;
-    hasChagend:boolean;
-    type:'required'|'email';
-    value:string;
-    testId:string;
-    
+    errorMessage: string;
+    hasChagend: boolean;
+    type: 'required' | 'email' | 'emailInUse';
+    value: string;
+    testId: string;
+    lastEmail: string
+
 }
-const ValidationError = (props:ValidationErrorProps) =>{
-    if(!props.hasChagend){
+const ValidationError = (props: ValidationErrorProps) => {
+
+
+    if (!props.hasChagend) {
         return null
     }
 
     const error = <div className="text-danger my-1" data-testid={props.testId}>{props.errorMessage}</div>
-    if(props.type === 'required'){
-        return(
-            props.value === ''?
+    if (props.type === 'required') {
+        return (
+            props.value === ''  ?
                 error
-            :null
+                : null
         )
     }
+    if (props.type === 'emailInUse' && props.value === props.lastEmail) {
+       return error
+    }
+    if(props.value !== props.lastEmail && props.type === 'emailInUse'){
+        return null
+    }
 
-    return(
+    return (
         !isEmailValid(props.value) ?
-                error
+            error
             : null
     )
 }

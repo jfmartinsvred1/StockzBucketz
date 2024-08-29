@@ -195,13 +195,17 @@ describe('Login', ()=>{
     userEvent.click(loginButton);
   }
 
-  class AuthServiceMock{
+  class AuthServiceMock {
     isLoggingIn = false;
     response: any;
-    login(){
-        this.isLoggingIn=true;
 
+    login() {
+        this.isLoggingIn = true;
         return this.response;
     }
-  }
+
+    register() {
+        return this.response
+    }
+}
 })
