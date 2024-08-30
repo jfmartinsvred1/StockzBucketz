@@ -5,6 +5,8 @@ import { MyStock, NewStock, StockApi } from '../../models/Stock';
 import { fetchStockData } from '../../services/ApiBrapiService';
 import Stock from '../stock';
 import Loading from '../loading';
+import { DataGrid, GridColDef, GridValueFormatter } from '@mui/x-data-grid';
+
 
 type MyStocksProps = {
     setMyStockss: (add: MyStock[]) => void;
@@ -12,35 +14,86 @@ type MyStocksProps = {
 };
 
 
-const MyStocks: React.FC<MyStocksProps>  = ({setMyStockss,myStockss}) => {
+const MyStocks: React.FC<MyStocksProps> = ({ setMyStockss, myStockss }) => {
 
-    const [investorData, setInvestorData]=useState({
+    const columns: GridColDef[] = [
+        { field: "id", headerName: '#', width: 150 },
+        { field: "code", headerName: 'Ativo', width: 150 },
+        {
+            field: "currentPrice",
+            headerName: 'Cotação',
+            width: 150,
+            valueGetter: (value: number, row) => {
+                return value.toFixed(2)
+            }
+
+        },
+        { field: "amount", headerName: 'Quantidade', width: 150 },
+        {
+            field: "mediumPrice",
+            headerName: 'PM',
+            width: 150,
+            valueGetter: (value: number, row) => {
+                return value.toFixed(2)
+            }
+
+        },
+        {
+            field: "earnings",
+            headerName: 'Dividendos',
+            width: 150,
+            valueGetter: (value: number, row) => {
+                return value.toFixed(2)
+            }
+
+        },
+        {
+            field: "value",
+            headerName: 'Valor',
+            width: 150,
+            valueGetter: (value: number, row) => {
+                return value.toFixed(2)
+            }
+
+        },
+        {
+            field: "cost",
+            headerName: 'Custo',
+            width: 150,
+            valueGetter: (value: number, row) => {
+                return value.toFixed(2)
+            }
+
+        },
+    ];
+
+    const [investorData, setInvestorData] = useState({
         profitability: 0,
         patrimony: 0,
         acquisitionCost: 0,
         accumulatedEarnings: 0,
         profit: 0
     });
-    const [allStocks,setAllStocks]=useState([
+    const [allStocks, setAllStocks] = useState([
         {
-            change:0,
-            close:0,
-            log:"",
-            market_cap:0,
-            name:"",
-            sector:"",
-            stock:"",
-            type:"",
-            volume:0
+            change: 0,
+            close: 0,
+            log: "",
+            market_cap: 0,
+            name: "",
+            sector: "",
+            stock: "",
+            type: "",
+            volume: 0
         }
     ]);
-    const [showLoading, setShowLoading]=useState(false)
+    const [showLoading, setShowLoading] = useState(false)
     const [showRegisterStock, setShowRegisterStock] = useState(false);
 
     async function handlerRegisterStock() {
         setShowLoading(true)
-        if(allStocks.length===1){
-            const data:StockApi[] = await fetchStockData()
+        if (allStocks.length === 1) {
+            const data: StockApi[] = await fetchStockData()
             setAllStocks(data)
         }
         setShowLoading(false)
@@ -53,25 +106,25 @@ const MyStocks: React.FC<MyStocksProps>  = ({setMyStockss,myStockss}) => {
     useEffect(() => {
         calculateInvestorData();
     }, [myStockss]);
-    
-    function calculateInvestorData(){
-        const data={
+
+    function calculateInvestorData() {
+        const data = {
             profitability: 0,
             patrimony: 0,
             acquisitionCost: 0,
             accumulatedEarnings: 0,
             profit: 0
         }
-        myStockss.map((s)=>(
-            data.patrimony+=s.value,
-            data.acquisitionCost+=s.cost
+        myStockss.map((s) => (
+            data.patrimony += s.value,
+            data.acquisitionCost += s.cost
         ))
-        data.profit= data.patrimony - data.acquisitionCost;
-        if(data.profit===0){
-            data.profitability=0
+        data.profit = data.patrimony - data.acquisitionCost;
+        if (data.profit === 0) {
+            data.profitability = 0
         }
-        else{
-            data.profitability= ((data.profit/data.acquisitionCost)*100)
+        else {
+            data.profitability = ((data.profit / data.acquisitionCost) * 100)
         }
         setInvestorData(data)
     }
@@ -83,7 +136,7 @@ const MyStocks: React.FC<MyStocksProps>  = ({setMyStockss,myStockss}) => {
     function updateStocks(newRegister: NewStock) {
         const existingStock = myStockss.find((s) => s.code === newRegister.code);
         const stockPrice = allStocks.find((s) => s.stock === newRegister.code);
-        
+
         if (existingStock && stockPrice) {
             const updatedStock = new MyStock(
                 existingStock.id,
@@ -93,93 +146,74 @@ const MyStocks: React.FC<MyStocksProps>  = ({setMyStockss,myStockss}) => {
                 existingStock.mediumPrice,
                 existingStock.earnings
             );
-    
+
             updatedStock.AddNew(
                 newRegister.amount,
                 newRegister.unitPrice,
                 existingStock.cost,
                 existingStock.amount
             );
-    
+
             const updatedStocks = myStockss.map(stock =>
                 stock.code === newRegister.code ? updatedStock : stock
             );
-    
+
             setMyStockss(updatedStocks);
             returnToMyStocks();
         } else if (stockPrice) {
             const newStock = new MyStock(
                 myStockss.length + 1,
                 newRegister.code,
-                Number(stockPrice.close.toFixed(2)), 
+                Number(stockPrice.close.toFixed(2)),
                 newRegister.amount,
                 newRegister.unitPrice,
                 0
             );
-    
+
             setMyStockss([...myStockss, newStock]);
         } else {
             console.error(`Stock price for ${newRegister.code} not found`);
         }
         calculateInvestorData()
     }
-    
-    
+
+
 
     return (
-        <div className="d-flex p-5 bg-light gap-5 w-100">
-            <div className=" myStockets w-100 d-flex flex-column justify-content-around bg-white p-4 shadow p-3 mb-5 bg-body-tertiary rounded">
+        <div className="d-flex flex-column p-5 bg-light gap-5 w-100  align-items-center">
+            <div className=" myStockets w-100 d-flex flex-row justify-content-around bg-white p-4 shadow p-3 mb-3 bg-body-tertiary rounded ">
                 <div className="d-flex flex-column align-items-center justify-content-center">
-                    <h1 className='text-primary'>{investorData.profitability.toFixed(2) }{"%"}</h1>
+                    <h1 className={investorData.profitability >=0 ? "text-primary":"text-danger"}>{investorData.profitability.toFixed(2)}{"%"}</h1>
                     <h6 className='text-secondary'>Rentabilidade Atual</h6>
                 </div>
-                <div className="d-flex align-items- justify-content-between">
+                <div className="d-flex flex-column align-items-center justify-content-between">
+                <h6>{investorData.patrimony.toFixed(2)}</h6>
                     <h6 className='text-secondary'>Patrimônio</h6>
-                    <h6>{investorData.patrimony.toFixed(2)}</h6>
                 </div>
-                <div className="d-flex align-items- justify-content-between">
+                <div className="d-flex flex-column align-items-center justify-content-between">
+                <h6>{investorData.acquisitionCost.toFixed(2)}</h6>
                     <h6 className='text-secondary'>Custo de aquisição</h6>
-                    <h6>{investorData.acquisitionCost.toFixed(2)}</h6>
                 </div>
-                <div className="d-flex align-items- justify-content-between">
+                <div className="d-flex flex-column align-items-center justify-content-between">
+                <h6 className={investorData.profitability >=0 ? "text-primary":"text-danger"}>{investorData.profit.toFixed(2)}</h6>
                     <h6 className='text-secondary'>Lucro</h6>
-                    <h6 className='text-primary'>{investorData.profit.toFixed(2)}</h6>
                 </div>
-                <div className="d-flex align-items- justify-content-center gap-3">
-                    <button onClick={(e)=>calculateInvestorData()} className='btn-newStock'>Novo Ativo</button>
+                <div className="d-flex align-items-center justify-content-center gap-3">
                     <button onClick={(e) => { handlerRegisterStock() }} className='btn-registeStock'>Cadastrar Ativo</button>
                 </div>
             </div>
             <div className='d-flex flex-column w-75'>
-                <div className='p-5 d-flex flex-column mw-100 align-items-center gap-3  bg-white p-4 shadow p-3 mb-5 bg-body-tertiary rounded'>
-                    <h4>Ações</h4>
-                    <table className="table table-striped">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Ativo </th>
-                                <th scope="col">Cotação</th>
-                                <th scope="col">Qtd</th>
-                                <th scope="col">Valor</th>
-                                <th scope="col">Custo</th>
-                                <th scope="col">PM</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {myStockss.map((stock, index) => (
-                                <Stock 
-                                    key={index} 
-                                    id={index} 
-                                    stock={stock}
-                                />
-                            ))}
-                        </tbody>
-                    </table>
-
+                <div className='d-flex flex-column mw-100 align-items-center gap-3  bg-white shadow  mb-5 bg-body-tertiary rounded'>
+                    <div style={{ height: 350, width: '100%' }}>
+                        <DataGrid
+                            rows={myStockss}
+                            columns={columns}
+                        />
+                    </div>
                 </div>
 
             </div>
-            {showLoading && <Loading/>}
+            {showLoading && <Loading />}
             {showRegisterStock && <RegisterStock calculateInvestorData={calculateInvestorData} updateStocks={updateStocks} stocksClient={allStocks} returnToMyStocks={returnToMyStocks} />}
         </div>
 
