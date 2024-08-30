@@ -4,15 +4,15 @@ import ValidationError from "../validationError";
 import { useNavigate } from "react-router-dom";
 import AuthService from "../../services/AuthService";
 import Loading from "../loading";
-import { fetchStockData } from "../../services/ApiBrapiService";
-
-type LoginPageProps = {
-  authService: AuthService;
-};
+import { useAuthContext } from "../../contexts/auth/AuthContext";
 
 
 
-const Login = (props: LoginPageProps) => {
+
+const Login = () => {
+
+  const {authService}:{authService:AuthService}=useAuthContext();
+
   const [form, setForm] = useState({
     email: {
       value: "",
@@ -37,16 +37,15 @@ const Login = (props: LoginPageProps) => {
   async function login(e:React.FormEvent) {
     e.preventDefault()
     setShowLoading(true);
-    await props.authService.login(form.email.value, form.password.value)
+    await authService.login(form.email.value, form.password.value)
     .then(()=>{
       setShowLoading(false);
-      navigate('/myStocks');
-      
     })
     .catch((err)=>{
       setShowLoading(false)
       setError(err)
     });
+    navigate('/myStocks');
   }
 
   return (

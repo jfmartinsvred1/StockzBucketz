@@ -2,28 +2,41 @@ import './App.css';
 import Footer from './components/footer';
 import Header from './components/header';
 import Login from './components/login';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import AuthService from './services/AuthService';
 import MyStocks from './components/myStocks';
-import { useState } from 'react';
-import { MyStock } from './models/Stock';
 import Register from './components/register';
+import Loading from './components/loading';
+import { useAuthContext } from './contexts/auth/AuthContext';
+
+type User={
+  email:string
+}
 
 function App() {
-  const [myStocks, setMyStocks] = useState<MyStock[]>([]);
-
+  const {isLoadingLoggerUser,user,myStocks,setMyStocks}=useAuthContext();
   return (
-    <div className="App">
+    <>
+      {
+      !isLoadingLoggerUser && 
       <BrowserRouter>
-        <Header/>
-          <Routes>
-            <Route path='/' element={<Login authService={new AuthService()}/>} />
-            <Route path='/myStocks' element={<MyStocks setMyStockss={setMyStocks} myStockss={myStocks} />} />
-            <Route path='/register' element={<Register authService={new AuthService()}/>} />
-          </Routes>
-        <Footer/>
+        <Header authService={new AuthService()} email={user!==null ? (user as User).email:user}/>
+        <Routes>
+          <Route 
+            path='/' 
+            element={
+              !user ? <Login/> : <Navigate to='/myStocks' />
+            }
+          />
+          <Route path='/myStocks' element={user ?<MyStocks setMyStockss={setMyStocks} myStockss={myStocks}/> : <Navigate to={'/'}/> } />
+          <Route path='/register' element={<Register  />} />
+        </Routes>
+        <Footer />
       </BrowserRouter>
-    </div>
+      }
+      {isLoadingLoggerUser && <Loading />}
+      
+    </>
   );
 }
 

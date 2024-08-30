@@ -4,7 +4,7 @@ import RegisterStock from '../registerStock/index';
 import { MyStock, NewStock, StockApi } from '../../models/Stock';
 import { fetchStockData } from '../../services/ApiBrapiService';
 import Loading from '../loading';
-import { DataGrid, GridColDef, GridValueFormatter } from '@mui/x-data-grid';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
 
 
 type MyStocksProps = {
@@ -16,22 +16,22 @@ type MyStocksProps = {
 const MyStocks: React.FC<MyStocksProps> = ({ setMyStockss, myStockss }) => {
 
     const columns: GridColDef[] = [
-        { field: "id", headerName: '#', width: 150 },
-        { field: "code", headerName: 'Ativo', width: 150 },
+        { field: "id", headerName: '#', width: 110 },
+        { field: "code", headerName: 'Ativo', width: 110 },
         {
             field: "currentPrice",
             headerName: 'Cotação',
-            width: 150,
+            width: 110,
             valueGetter: (value: number, row) => {
                 return value.toFixed(2)
             }
 
         },
-        { field: "amount", headerName: 'Quantidade', width: 150 },
+        { field: "amount", headerName: 'Quantidade', width: 110 },
         {
             field: "mediumPrice",
             headerName: 'PM',
-            width: 150,
+            width: 110,
             valueGetter: (value: number, row) => {
                 return value.toFixed(2)
             }
@@ -40,7 +40,7 @@ const MyStocks: React.FC<MyStocksProps> = ({ setMyStockss, myStockss }) => {
         {
             field: "earnings",
             headerName: 'Dividendos',
-            width: 150,
+            width: 110,
             valueGetter: (value: number, row) => {
                 return value.toFixed(2)
             }
@@ -49,7 +49,7 @@ const MyStocks: React.FC<MyStocksProps> = ({ setMyStockss, myStockss }) => {
         {
             field: "value",
             headerName: 'Valor',
-            width: 150,
+            width: 110,
             valueGetter: (value: number, row) => {
                 return value.toFixed(2)
             }
@@ -58,7 +58,7 @@ const MyStocks: React.FC<MyStocksProps> = ({ setMyStockss, myStockss }) => {
         {
             field: "cost",
             headerName: 'Custo',
-            width: 150,
+            width: 110,
             valueGetter: (value: number, row) => {
                 return value.toFixed(2)
             }

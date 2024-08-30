@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export async function fetchStockData() {
   try {
-    const response = await axios.get('https://brapi.dev/api/quote/list?token=e1N2Rv5dStx9u6xCzsveoN?search=ibo', {
+    const response = await axios.get(`https://brapi.dev/api/quote/list?${process.env.TOKEN_API_BRAPI}?search=ibo`, {
       params: {
       },
     });
