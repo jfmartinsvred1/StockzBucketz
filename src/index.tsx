@@ -5,13 +5,18 @@ import App from './App';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import reportWebVitals from './reportWebVitals';
+import AuthService from './services/AuthService';
+import AuthProvider from './contexts/auth/AuthProvider';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
+const authService=  new AuthService()
 root.render(
   <React.StrictMode>
-    <App />
+    <AuthProvider authService={authService}>
+      <App />
+    </AuthProvider>
   </React.StrictMode>
 );
 

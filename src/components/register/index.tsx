@@ -4,10 +4,10 @@ import Loading from "../loading";
 import ValidationError from "../validationError";
 import AuthService from "../../services/AuthService";
 import { isEmailValid } from "../../helpers/emailHelper";
-type RegisterProps={
-    authService:AuthService
-}
-const Register = (props:RegisterProps) => {
+import { useAuthContext } from "../../contexts/auth/AuthContext";
+
+const Register = () => {
+    const {authService}:{authService:AuthService}=useAuthContext();
     const [form, setForm] = useState({
         email: {
           value: "",
@@ -27,18 +27,17 @@ const Register = (props:RegisterProps) => {
     
       const navigate = useNavigate();
     
-      function goToPage(location: string,e:React.MouseEvent) {
-        e.preventDefault()
+      function goToPage(location: string) {
         navigate(location);
       }
     
       async function register(e:React.FormEvent) {
         e.preventDefault()
         setShowLoading(true);
-        await props.authService.register(form.email.value, form.password.value)
-        .then((user)=>{
+        await authService.register(form.email.value, form.password.value)
+        .then(()=>{
             setShowLoading(false);
-            navigate('/myStocks');
+            goToPage('myStoks')
         })
         .catch((err)=>{
             if(err.code==='auth/email-already-in-use'){

@@ -13,5 +13,7 @@ const firebaseConfig = {
 
 const app = firebase.initializeApp(firebaseConfig);
 
-export const auth = firebaseAuth.initializeAuth(app);
+export const auth = firebaseAuth.initializeAuth(app,{
+  persistence: firebaseAuth.browserLocalPersistence
+});
 
