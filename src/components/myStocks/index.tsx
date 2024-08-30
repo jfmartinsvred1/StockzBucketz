@@ -3,7 +3,6 @@ import './myStockets.css'
 import RegisterStock from '../registerStock/index';
 import { MyStock, NewStock, StockApi } from '../../models/Stock';
 import { fetchStockData } from '../../services/ApiBrapiService';
-import Stock from '../stock';
 import Loading from '../loading';
 import { DataGrid, GridColDef, GridValueFormatter } from '@mui/x-data-grid';
 
