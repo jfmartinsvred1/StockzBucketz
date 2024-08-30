@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState,useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import Loading from "../loading";
 import ValidationError from "../validationError";
@@ -7,46 +7,68 @@ import { isEmailValid } from "../../helpers/emailHelper";
 import { useAuthContext } from "../../contexts/auth/AuthContext";
 
 const Register = () => {
-    const {authService}:{authService:AuthService}=useAuthContext();
+    const { authService }: { authService: AuthService } = useAuthContext();
     const [form, setForm] = useState({
         email: {
-          value: "",
-          hasChanged: false,
+            value: "",
+            hasChanged: false,
         },
         password: {
-          value: "",
-          hasChanged: false,
+            value: "",
+            hasChanged: false,
         },
-      });
+        rePassword: {
+            value: "",
+            hasChanged: false
+        }
+    });
 
-      const [lastEmail,setLastEmail]=useState<string>("")
+    const [comparePassword, setComparePassword] = useState(true)
 
-      const [showLoading,setShowLoading]=useState(false);
-    
-      const [error, setError]=useState(null as any);
-    
-      const navigate = useNavigate();
-    
-      function goToPage(location: string) {
+    const [lastEmail, setLastEmail] = useState<string>("")
+
+    const [showLoading, setShowLoading] = useState(false);
+
+
+    const navigate = useNavigate();
+
+    const verifyRepassword = useCallback(() => {
+        if (form.password.value !== form.rePassword.value && form.rePassword.value !== "") {
+            setComparePassword(false);
+            return false;
+        }
+        if(form.password.value ==='' || form.rePassword.value===''){
+            return false
+        }
+        setComparePassword(true);
+        return true;
+    }, [form.password.value, form.rePassword.value]);
+
+    useEffect(() => {
+        verifyRepassword();
+    }, [form.rePassword.value, form.password.value, verifyRepassword]);
+
+    function goToPage(location: string) {
         navigate(location);
-      }
-    
-      async function register(e:React.FormEvent) {
-        e.preventDefault()
+    }
+
+    async function register(e: React.FormEvent) {
+        e.preventDefault();
         setShowLoading(true);
-        await authService.register(form.email.value, form.password.value)
-        .then(()=>{
-            setShowLoading(false);
-            goToPage('myStoks')
-        })
-        .catch((err)=>{
-            if(err.code==='auth/email-already-in-use'){
-                setLastEmail(form.email.value)
-            }
-            
-            setShowLoading(false)
-        })
-      }
+        if (verifyRepassword()) {
+            await authService.register(form.email.value, form.password.value)
+                .then(() => {
+                    goToPage('/myStocks')
+                })
+                .catch((err) => {
+                    if (err.code === 'auth/email-already-in-use') {
+                        setLastEmail(form.email.value)
+                    }
+                })
+        }
+        setShowLoading(false);
+
+    }
     return (
         <div className="d-flex flex-column justify-content-center align-items-center p-5 my-5">
             <div className="bg-light shadow px-3 py-5 pb-4 rounded">
@@ -89,7 +111,7 @@ const Register = () => {
                             type="email"
                             value={form.email.value}
                         />
-                        
+
                         <small id="emailHelp" className="form-text text-muted">
                             Nunca vamos compartilhar seu email, com ninguém.
                         </small>
@@ -107,14 +129,21 @@ const Register = () => {
                             placeholder="Senha"
                             data-testid="password"
                         />
-                        {error && <div className="error" data-testid="error">{error.message}</div>}
+                        <ValidationError
+                            hasChagend={form.rePassword.hasChanged}
+                            errorMessage="Senha é obrigatório"
+                            testId="email-required"
+                            lastEmail={lastEmail}
+                            type="required"
+                            value={form.password.value}
+                        />
                     </div>
                     <div className="form-group pb-3">
                         <label>Confime Sua Senha</label>
                         <input
-                            value={form.password.value}
+                            value={form.rePassword.value}
                             onChange={(e) => {
-                                setForm({ ...form, password: { hasChanged: true, value: e.target.value } });
+                                setForm({ ...form, rePassword: { hasChanged: true, value: e.target.value } })
                             }}
                             type="password"
                             className="form-control"
@@ -122,12 +151,20 @@ const Register = () => {
                             placeholder="Confime Sua Senha"
                             data-testid="password"
                         />
-                        {error && <div className="error" data-testid="error">{error.message}</div>}
+                        <ValidationError
+                            hasChagend={form.rePassword.hasChanged}
+                            errorMessage="Confirmação de senha é obrigatório"
+                            testId="email-required"
+                            lastEmail={lastEmail}
+                            type="required"
+                            value={form.rePassword.value}
+                        />
+                        {!comparePassword && <div className="text-danger">As senhas não estão iguais.</div>}
                     </div>
                     <div className="pt-3 d-flex flex-row justify-content-center">
                         <button
                             onClick={(e) => register(e)}
-                            disabled={!isEmailValid(form.email.value)}
+                            disabled={!isEmailValid(form.email.value) && comparePassword}
                             className="btn btn-primary"
                             data-testid="btn-register"
                         >
