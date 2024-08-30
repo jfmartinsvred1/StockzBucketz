@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Stock } from '../../Stock';
 import './registerStock.css';
 import { NewStock, StockApi } from '../../models/Stock';
 
@@ -50,6 +49,8 @@ const RegisterStock: React.FC<RegisterStockProps> = ({ stocksClient, returnToMyS
       <div className="bg-white p-5 rounded" onClick={(e)=>e.stopPropagation()}>
         <label htmlFor="exampleDataList" className="form-label text-secondary">Digite o código do ativo que queira cadastrar</label>
         <input
+          max={5}
+          size={5}
           className="form-control"
           list="datalistOptions"
           id="exampleDataList"
