@@ -13,11 +13,9 @@ const root = ReactDOM.createRoot(
 );
 const authService=  new AuthService()
 root.render(
-  <React.StrictMode>
     <AuthProvider authService={authService}>
       <App />
     </AuthProvider>
-  </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

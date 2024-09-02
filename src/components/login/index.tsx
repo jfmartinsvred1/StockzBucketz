@@ -38,7 +38,8 @@ const Login = () => {
     e.preventDefault()
     setShowLoading(true);
     await authService.login(form.email.value, form.password.value)
-    .then(()=>{
+    .then((user)=>{
+      console.log(user.user.uid)
       setShowLoading(false);
     })
     .catch((err)=>{
