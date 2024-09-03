@@ -31,7 +31,7 @@ const RegisterStock: React.FC<RegisterStockProps> = ({ stocksClient, returnToMyS
   }
   )
 
-  function register(){
+   function register(){
     const newStockRegister:NewStock={
       code:form.code.value,
       date:form.date.value,

@@ -2,24 +2,31 @@ import { useState, useEffect } from 'react';
 import './myStockets.css'
 import RegisterStock from '../registerStock/index';
 import { MyStock, NewStock, StockApi } from '../../models/Stock';
-import { fetchStockData } from '../../services/ApiBrapiService';
 import Loading from '../loading';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { DataGrid, GridColDef,GridActionsCellItem,GridAddIcon,GridDeleteIcon, } from '@mui/x-data-grid';
+import { AddStock, GetAllStocs, GetStocksOfUser,DeleteStock } from '../../services/ApiService';
+import lixeira from '../../images/lixeira.png'
 
 
 type MyStocksProps = {
     setMyStockss: (add: MyStock[]) => void;
-    myStockss: MyStock[]; // Corrigido aqui
+    myStockss: MyStock[];
+    userId:any
 };
 
 
-const MyStocks: React.FC<MyStocksProps> = ({ setMyStockss, myStockss }) => {
+const MyStocks: React.FC<MyStocksProps> = ({userId, setMyStockss, myStockss }) => {
+
+    async function deleteStock(id:number){
+        await DeleteStock(id);
+        var stockss= myStockss.filter((s)=>s.id!==id)
+        setMyStockss(stockss)
+    }
 
     const columns: GridColDef[] = [
-        { field: "id", headerName: '#', width: 110 },
         { field: "code", headerName: 'Ativo', width: 110 },
         {
-            field: "currentPrice",
+            field: "unitPrice",
             headerName: 'Cotação',
             width: 110,
             valueGetter: (value: number, row) => {
@@ -64,6 +71,26 @@ const MyStocks: React.FC<MyStocksProps> = ({ setMyStockss, myStockss }) => {
             }
 
         },
+        {
+            field: 'actions',
+            type: 'actions',
+            headerName: 'Delete',
+            width: 100,
+            cellClassName: 'actions',
+            
+            getActions: ({ id }) => {
+      
+                return [
+                  <GridActionsCellItem
+                    icon={<img src={lixeira} width="16px"/>}
+                    label="Cancel"
+                    className="textPrimary"
+                    onClick={(e)=>deleteStock(Number(id))}
+                    color="inherit"
+                  />,
+                ];
+            },
+        },
     ];
 
     const [investorData, setInvestorData] = useState({
@@ -73,6 +100,7 @@ const MyStocks: React.FC<MyStocksProps> = ({ setMyStockss, myStockss }) => {
         accumulatedEarnings: 0,
         profit: 0
     });
+    const [lastTimeRequest,setLastTimeRequest]=useState<number>(0);
     const [allStocks, setAllStocks] = useState([
         {
             change: 0,
@@ -86,25 +114,34 @@ const MyStocks: React.FC<MyStocksProps> = ({ setMyStockss, myStockss }) => {
             volume: 0
         }
     ]);
+
     const [showLoading, setShowLoading] = useState(false)
     const [showRegisterStock, setShowRegisterStock] = useState(false);
 
     async function handlerRegisterStock() {
+        var nowDate= new Date();
         setShowLoading(true)
-        if (allStocks.length === 1) {
-            const data: StockApi[] = await fetchStockData()
-            setAllStocks(data)
+        var timeAddMin= lastTimeRequest as number+(30*60000)
+        if (allStocks.length === 1 || timeAddMin <= nowDate.getTime()||lastTimeRequest==0) 
+            {
+            const data: StockApi[] = await GetAllStocs();
+            setLastTimeRequest(nowDate.getTime());
+            setAllStocks(data);
         }
         setShowLoading(false)
         setShowRegisterStock(true)
 
     }
 
-
+    useEffect(()=>{
+        GetStocksOfUser(userId).then((data)=>setMyStockss(data)).catch((err)=>console.log(err))
+        calculateInvestorData()
+    },[])
 
     useEffect(() => {
         calculateInvestorData();
     }, [myStockss]);
+
 
     function calculateInvestorData() {
         const data = {
@@ -128,11 +165,10 @@ const MyStocks: React.FC<MyStocksProps> = ({ setMyStockss, myStockss }) => {
         setInvestorData(data)
     }
     function returnToMyStocks() {
-        calculateInvestorData()
         setShowRegisterStock(false)
     }
 
-    function updateStocks(newRegister: NewStock) {
+    async function updateStocks(newRegister: NewStock) {
         const existingStock = myStockss.find((s) => s.code === newRegister.code);
         const stockPrice = allStocks.find((s) => s.stock === newRegister.code);
 
@@ -140,7 +176,7 @@ const MyStocks: React.FC<MyStocksProps> = ({ setMyStockss, myStockss }) => {
             const updatedStock = new MyStock(
                 existingStock.id,
                 newRegister.code,
-                existingStock.currentPrice,
+                existingStock.unitPrice,
                 existingStock.amount + newRegister.amount,
                 existingStock.mediumPrice,
                 existingStock.earnings
@@ -173,7 +209,7 @@ const MyStocks: React.FC<MyStocksProps> = ({ setMyStockss, myStockss }) => {
         } else {
             console.error(`Stock price for ${newRegister.code} not found`);
         }
-        calculateInvestorData()
+        AddStock(newRegister,userId as string);
     }
 
 
@@ -203,14 +239,17 @@ const MyStocks: React.FC<MyStocksProps> = ({ setMyStockss, myStockss }) => {
             </div>
             <div className='d-flex flex-column w-75'>
                 <div className='d-flex flex-column mw-100 align-items-center gap-3  bg-white shadow  mb-5 bg-body-tertiary rounded'>
-                    <div style={{ height: 350, width: '100%' }}>
+                    <div style={{ height: 372, width: '100%' }}>
                         <DataGrid
                             rows={myStockss}
                             columns={columns}
+                            pageSizeOptions={[5]}
                         />
                     </div>
                 </div>
 
+            </div>
+            <div className='d-flex'>
             </div>
             {showLoading && <Loading />}
             {showRegisterStock && <RegisterStock calculateInvestorData={calculateInvestorData} updateStocks={updateStocks} stocksClient={allStocks} returnToMyStocks={returnToMyStocks} />}

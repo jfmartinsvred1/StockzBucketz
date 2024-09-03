@@ -20,19 +20,19 @@ export type StockApi={
 export class MyStock {
     public id: number;
     public code: string;
-    public currentPrice: number;
+    public unitPrice: number;
     public amount: number;
     public mediumPrice: number;
     public earnings: number;
     public value: number;
     public cost: number;
 
-    public constructor(id: number, code: string, currentPrice: number, amount: number, mediumPrice: number, earnings: number) {
+    public constructor(id: number, code: string, unitPrice: number, amount: number, mediumPrice: number, earnings: number) {
         this.id = id;
         this.code = code;
-        this.currentPrice = currentPrice;
+        this.unitPrice = unitPrice;
         this.amount = amount;
-        this.value = this.currentPrice * amount;
+        this.value = this.unitPrice * amount;
         this.mediumPrice = mediumPrice;
         this.cost = this.mediumPrice * amount;
         this.earnings = earnings;

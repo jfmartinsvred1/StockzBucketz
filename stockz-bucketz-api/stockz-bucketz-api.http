@@ -1,0 +1,6 @@
+@stockz_bucketz_api_HostAddress = http://localhost:5053
+
+GET {{stockz_bucketz_api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -15,12 +15,13 @@ type User={
 
 function App() {
   const {isLoadingLoggerUser,user,myStocks,setMyStocks}=useAuthContext();
+
   return (
     <>
       {
       !isLoadingLoggerUser && 
       <BrowserRouter>
-        <Header authService={new AuthService()} email={user!==null ? (user as User).email:user}/>
+        <Header authService={new AuthService()} email={user!==null ? (user).email:user}/>
         <Routes>
           <Route 
             path='/' 
@@ -28,8 +29,8 @@ function App() {
               !user ? <Login/> : <Navigate to='/myStocks' />
             }
           />
-          <Route path='/myStocks' element={user ?<MyStocks setMyStockss={setMyStocks} myStockss={myStocks}/> : <Navigate to={'/'}/> } />
-          <Route path='/register' element={<Register  />} />
+          <Route path='/myStocks' element={user ?<MyStocks userId={user!==null ?user.uid:user} setMyStockss={setMyStocks} myStockss={myStocks}/> : <Navigate to={'/'}/> } />
+          <Route path='/register' element={!user ?<Register  />:<Navigate to={'/myStocks'}/>} />
         </Routes>
         <Footer />
       </BrowserRouter>
