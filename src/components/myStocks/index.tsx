@@ -3,23 +3,23 @@ import './myStockets.css'
 import RegisterStock from '../registerStock/index';
 import { MyStock, NewStock, StockApi } from '../../models/Stock';
 import Loading from '../loading';
-import { DataGrid, GridColDef,GridActionsCellItem,GridAddIcon,GridDeleteIcon, } from '@mui/x-data-grid';
-import { AddStock, GetAllStocs, GetStocksOfUser,DeleteStock } from '../../services/ApiService';
+import { DataGrid, GridColDef, GridActionsCellItem, GridAddIcon, GridDeleteIcon, } from '@mui/x-data-grid';
+import { AddStock, GetAllStocs, GetStocksOfUser, DeleteStock } from '../../services/ApiService';
 import lixeira from '../../images/lixeira.png'
-
+import { Chart } from "react-google-charts";
 
 type MyStocksProps = {
     setMyStockss: (add: MyStock[]) => void;
     myStockss: MyStock[];
-    userId:any
+    userId: any
 };
 
 
-const MyStocks: React.FC<MyStocksProps> = ({userId, setMyStockss, myStockss }) => {
+const MyStocks: React.FC<MyStocksProps> = ({ userId, setMyStockss, myStockss }) => {
 
-    async function deleteStock(id:number){
+    async function deleteStock(id: number) {
         await DeleteStock(id);
-        var stockss= myStockss.filter((s)=>s.id!==id)
+        var stockss = myStockss.filter((s) => s.id !== id)
         setMyStockss(stockss)
     }
 
@@ -75,19 +75,19 @@ const MyStocks: React.FC<MyStocksProps> = ({userId, setMyStockss, myStockss }) =
             field: 'actions',
             type: 'actions',
             headerName: 'Delete',
-            width: 100,
+            width: 110,
             cellClassName: 'actions',
-            
+
             getActions: ({ id }) => {
-      
+
                 return [
-                  <GridActionsCellItem
-                    icon={<img src={lixeira} width="16px"/>}
-                    label="Cancel"
-                    className="textPrimary"
-                    onClick={(e)=>deleteStock(Number(id))}
-                    color="inherit"
-                  />,
+                    <GridActionsCellItem
+                        icon={<img src={lixeira} width="16px" />}
+                        label="Cancel"
+                        className="textPrimary"
+                        onClick={(e) => deleteStock(Number(id))}
+                        color="inherit"
+                    />,
                 ];
             },
         },
@@ -100,7 +100,9 @@ const MyStocks: React.FC<MyStocksProps> = ({userId, setMyStockss, myStockss }) =
         accumulatedEarnings: 0,
         profit: 0
     });
-    const [lastTimeRequest,setLastTimeRequest]=useState<number>(0);
+
+    const [lastTimeRequest, setLastTimeRequest] = useState<number>(0);
+
     const [allStocks, setAllStocks] = useState([
         {
             change: 0,
@@ -116,14 +118,14 @@ const MyStocks: React.FC<MyStocksProps> = ({userId, setMyStockss, myStockss }) =
     ]);
 
     const [showLoading, setShowLoading] = useState(false)
+
     const [showRegisterStock, setShowRegisterStock] = useState(false);
 
     async function handlerRegisterStock() {
-        var nowDate= new Date();
+        var nowDate = new Date();
         setShowLoading(true)
-        var timeAddMin= lastTimeRequest as number+(30*60000)
-        if (allStocks.length === 1 || timeAddMin <= nowDate.getTime()||lastTimeRequest==0) 
-            {
+        var timeAddMin = lastTimeRequest as number + (30 * 60000)
+        if (allStocks.length === 1 || timeAddMin <= nowDate.getTime() || lastTimeRequest == 0) {
             const data: StockApi[] = await GetAllStocs();
             setLastTimeRequest(nowDate.getTime());
             setAllStocks(data);
@@ -132,16 +134,26 @@ const MyStocks: React.FC<MyStocksProps> = ({userId, setMyStockss, myStockss }) =
         setShowRegisterStock(true)
 
     }
+    const dataPieChart = [
+        ["Code", "Valor"],
+        ...myStockss.map(s => [s.code, s.value])
+    ];
 
-    useEffect(()=>{
-        GetStocksOfUser(userId).then((data)=>setMyStockss(data)).catch((err)=>console.log(err))
+    const optionsPieChart = {
+        title: "Minha Carteira",
+        is3D: true,
+        backgroundColor: "#f8f9fa"
+
+    };
+
+    useEffect(() => {
+        GetStocksOfUser(userId).then((data) => setMyStockss(data)).catch((err) => console.log(err))
         calculateInvestorData()
-    },[])
+    }, [])
 
     useEffect(() => {
         calculateInvestorData();
     }, [myStockss]);
-
 
     function calculateInvestorData() {
         const data = {
@@ -209,28 +221,26 @@ const MyStocks: React.FC<MyStocksProps> = ({userId, setMyStockss, myStockss }) =
         } else {
             console.error(`Stock price for ${newRegister.code} not found`);
         }
-        AddStock(newRegister,userId as string);
+        AddStock(newRegister, userId as string);
     }
-
-
 
     return (
         <div className="d-flex flex-column p-5 bg-light gap-5 w-100  align-items-center">
             <div className=" myStockets w-100 d-flex flex-row justify-content-around bg-white p-4 shadow p-3 mb-3 bg-body-tertiary rounded ">
                 <div className="d-flex flex-column align-items-center justify-content-center">
-                    <h1 className={investorData.profitability >=0 ? "text-primary":"text-danger"}>{investorData.profitability.toFixed(2)}{"%"}</h1>
+                    <h1 className={investorData.profitability >= 0 ? "text-primary" : "text-danger"}>{investorData.profitability.toFixed(2)}{"%"}</h1>
                     <h6 className='text-secondary'>Rentabilidade Atual</h6>
                 </div>
                 <div className="d-flex flex-column align-items-center justify-content-between">
-                <h6>{investorData.patrimony.toFixed(2)}</h6>
+                    <h6>{investorData.patrimony.toFixed(2)}</h6>
                     <h6 className='text-secondary'>Patrimônio</h6>
                 </div>
                 <div className="d-flex flex-column align-items-center justify-content-between">
-                <h6>{investorData.acquisitionCost.toFixed(2)}</h6>
+                    <h6>{investorData.acquisitionCost.toFixed(2)}</h6>
                     <h6 className='text-secondary'>Custo de aquisição</h6>
                 </div>
                 <div className="d-flex flex-column align-items-center justify-content-between">
-                <h6 className={investorData.profitability >=0 ? "text-primary":"text-danger"}>{investorData.profit.toFixed(2)}</h6>
+                    <h6 className={investorData.profitability >= 0 ? "text-primary" : "text-danger"}>{investorData.profit.toFixed(2)}</h6>
                     <h6 className='text-secondary'>Lucro</h6>
                 </div>
                 <div className="d-flex align-items-center justify-content-center gap-3">
@@ -247,9 +257,16 @@ const MyStocks: React.FC<MyStocksProps> = ({userId, setMyStockss, myStockss }) =
                         />
                     </div>
                 </div>
-
             </div>
-            <div className='d-flex'>
+            <div className='d-flex bg-light'>
+                <Chart
+                    chartType="PieChart"
+                    data={dataPieChart}
+                    options={optionsPieChart}
+                    width={"100%"}
+                    height={"400px"}
+
+                />
             </div>
             {showLoading && <Loading />}
             {showRegisterStock && <RegisterStock calculateInvestorData={calculateInvestorData} updateStocks={updateStocks} stocksClient={allStocks} returnToMyStocks={returnToMyStocks} />}

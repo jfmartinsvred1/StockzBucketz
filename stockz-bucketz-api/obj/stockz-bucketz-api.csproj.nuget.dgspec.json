@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Joao\\Desktop\\Projetos\\stockz-bucketz-api\\stockz-bucketz-api.csproj": {}
+    "C:\\Users\\Joao\\Desktop\\Projetos\\stockbucket-react\\stockz-bucketz-api\\stockz-bucketz-api.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Joao\\Desktop\\Projetos\\stockz-bucketz-api\\stockz-bucketz-api.csproj": {
+    "C:\\Users\\Joao\\Desktop\\Projetos\\stockbucket-react\\stockz-bucketz-api\\stockz-bucketz-api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Joao\\Desktop\\Projetos\\stockz-bucketz-api\\stockz-bucketz-api.csproj",
+        "projectUniqueName": "C:\\Users\\Joao\\Desktop\\Projetos\\stockbucket-react\\stockz-bucketz-api\\stockz-bucketz-api.csproj",
         "projectName": "stockz-bucketz-api",
-        "projectPath": "C:\\Users\\Joao\\Desktop\\Projetos\\stockz-bucketz-api\\stockz-bucketz-api.csproj",
+        "projectPath": "C:\\Users\\Joao\\Desktop\\Projetos\\stockbucket-react\\stockz-bucketz-api\\stockz-bucketz-api.csproj",
         "packagesPath": "C:\\Users\\Joao\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Joao\\Desktop\\Projetos\\stockz-bucketz-api\\obj\\",
+        "outputPath": "C:\\Users\\Joao\\Desktop\\Projetos\\stockbucket-react\\stockz-bucketz-api\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
