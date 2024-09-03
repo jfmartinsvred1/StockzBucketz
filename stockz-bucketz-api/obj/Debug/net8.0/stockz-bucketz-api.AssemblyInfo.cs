@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("stockz-bucketz-api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+751d7ad64351d53a9395aa130ce5c7be889f8448")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+87af63cfb3bd97bf0f4c7b92210643961ec42f7c")]
 [assembly: System.Reflection.AssemblyProductAttribute("stockz-bucketz-api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("stockz-bucketz-api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
