@@ -2,6 +2,9 @@
 
 StockzBucketz é uma aplicação para gerenciamento de portfólios de ações, utilizando React, .NET 8, e Firebase.
 
+## Pré-visualização
+
+
 ## Pré-requisitos
 
 - Node.js (>= 20.17)
