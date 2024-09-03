@@ -10,6 +10,14 @@ StockzBucketz é uma aplicação para gerenciamento de portfólios de ações, u
 - Banco de dados SQL Server ou MySQL configurado na máquina
 - Docker (opcional)
 
+## Tecnologias Utilizadas
+ - Docker
+ - .NET 8
+ - React
+ - Typescript
+ - Firebase
+ - 
+
 ## Instalação
 
 1. Clone o repositório:
