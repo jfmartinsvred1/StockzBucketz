@@ -3,7 +3,7 @@ import { NewStock } from "../models/Stock";
 
 
 export function AddStock(stock:NewStock,userId:string){
-    axios.post("http://localhost:5053/Stock",{
+    axios.post("https://localhost:7142/Stock",{
             "idUser": userId,
             "code": stock.code,
             "date": stock.date,
@@ -20,7 +20,7 @@ export function AddStock(stock:NewStock,userId:string){
 
 export async function GetStocksOfUser(id:string){
 
-   return await axios.get("http://localhost:5053/Stock",{
+   return await axios.get("https://localhost:7142/Stock",{
         params:{
             id:id
         }
@@ -28,12 +28,12 @@ export async function GetStocksOfUser(id:string){
 }
 
 export async function GetAllStocs(){
-    return await axios.get("http://localhost:5053/Stock/All",{
+    return await axios.get("https://localhost:7142/Stock/All",{
      }).then((data)=>data.data)
  }
 
  export async function DeleteStock(id:number){
-    return await axios.delete("http://localhost:5053/Stock",{
+    return await axios.delete("https://localhost:7142/Stock",{
         params:{
             id:id
         }

@@ -31,6 +31,8 @@ const Header = (props: HeaderProps) => {
                     <img src={logo} width="128px"></img>
                     <div className='d-flex justify-content-between gap-5'>
                         <h5 className='text-light nav-items'>{props.email != null ? "Minhas Ações" : ""}</h5>
+                        <h5 className='text-light nav-items'>{props.email != null ? "Meus Dividendos" : ""}</h5>
+                        <h5 className='text-light nav-items'>{props.email != null ? "Mensagens" : ""}</h5>
                     </div>
                 </div>
                 <div className='d-flex flex-column justify-content-around gap-1 align-items-end px-5'>
