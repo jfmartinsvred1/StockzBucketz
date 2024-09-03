@@ -3,8 +3,9 @@ import './myStockets.css'
 import RegisterStock from '../registerStock/index';
 import { MyStock, NewStock, StockApi } from '../../models/Stock';
 import Loading from '../loading';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { AddStock, GetAllStocs, GetStocksOfUser } from '../../services/ApiService';
+import { DataGrid, GridColDef,GridActionsCellItem,GridAddIcon,GridDeleteIcon, } from '@mui/x-data-grid';
+import { AddStock, GetAllStocs, GetStocksOfUser,DeleteStock } from '../../services/ApiService';
+import lixeira from '../../images/lixeira.png'
 
 
 type MyStocksProps = {
@@ -15,6 +16,12 @@ type MyStocksProps = {
 
 
 const MyStocks: React.FC<MyStocksProps> = ({userId, setMyStockss, myStockss }) => {
+
+    async function deleteStock(id:number){
+        await DeleteStock(id);
+        var stockss= myStockss.filter((s)=>s.id!==id)
+        setMyStockss(stockss)
+    }
 
     const columns: GridColDef[] = [
         { field: "code", headerName: 'Ativo', width: 110 },
@@ -64,6 +71,26 @@ const MyStocks: React.FC<MyStocksProps> = ({userId, setMyStockss, myStockss }) =
             }
 
         },
+        {
+            field: 'actions',
+            type: 'actions',
+            headerName: 'Delete',
+            width: 100,
+            cellClassName: 'actions',
+            
+            getActions: ({ id }) => {
+      
+                return [
+                  <GridActionsCellItem
+                    icon={<img src={lixeira} width="16px"/>}
+                    label="Cancel"
+                    className="textPrimary"
+                    onClick={(e)=>deleteStock(Number(id))}
+                    color="inherit"
+                  />,
+                ];
+            },
+        },
     ];
 
     const [investorData, setInvestorData] = useState({
@@ -87,6 +114,7 @@ const MyStocks: React.FC<MyStocksProps> = ({userId, setMyStockss, myStockss }) =
             volume: 0
         }
     ]);
+
     const [showLoading, setShowLoading] = useState(false)
     const [showRegisterStock, setShowRegisterStock] = useState(false);
 
@@ -211,10 +239,11 @@ const MyStocks: React.FC<MyStocksProps> = ({userId, setMyStockss, myStockss }) =
             </div>
             <div className='d-flex flex-column w-75'>
                 <div className='d-flex flex-column mw-100 align-items-center gap-3  bg-white shadow  mb-5 bg-body-tertiary rounded'>
-                    <div style={{ height: 350, width: '100%' }}>
+                    <div style={{ height: 372, width: '100%' }}>
                         <DataGrid
                             rows={myStockss}
                             columns={columns}
+                            pageSizeOptions={[5]}
                         />
                     </div>
                 </div>
