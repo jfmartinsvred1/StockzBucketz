@@ -73,6 +73,8 @@ Scripts Disponíveis
     npm run build
     Compila a aplicação para produção na pasta build.
 
-Observações
-Certifique-se de que o banco de dados SQL Server ou MySQL esteja em execução e acessível.
-As variáveis de ambiente precisam estar corretamente configuradas no arquivo .env para que a aplicação funcione corretamente.-
+Observações:
+
+1. O projeto ainda não está 100% completo e segue recebendo atualizações.
+2. Certifique-se de que o banco de dados SQL Server ou MySQL esteja em execução e acessível.
+3. As variáveis de ambiente precisam estar corretamente configuradas no arquivo .env para que a aplicação funcione corretamente.
