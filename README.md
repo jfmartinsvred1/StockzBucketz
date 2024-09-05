@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 # StockzBucketz
+=======
+Project link : https://stockz-bucketz.vercel.app
+
+# Getting Started with Create React App
+>>>>>>> joao
 
 StockzBucketz é uma aplicação para gerenciamento de portfólios de ações, utilizando React, .NET 8, e Firebase.
 

@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import './registerStock.css';
-import { NewStock, StockApi } from '../../models/Stock';
+import { CreateMonthlyRecord, CreateTransaction, StockBrapi } from '../../models/types';
+import { AddMonthlyRecord, AddStock } from '../../services/ApiService';
 
 type RegisterStockProps = {
-  stocksClient:StockApi[];
+  stocksClient:StockBrapi[];
   returnToMyStocks:()=>void;
-  updateStocks:(addStock:NewStock)=>void;
-  calculateInvestorData:()=>void;
+  userId:any
+  updateStocks:()=>void
 };
 
-const RegisterStock: React.FC<RegisterStockProps> = ({ stocksClient, returnToMyStocks,updateStocks,calculateInvestorData }) => {
+const RegisterStock= ({userId, stocksClient, returnToMyStocks,updateStocks }:RegisterStockProps) => {
 
   const [form,setForm]=useState({
     code:{
@@ -31,14 +32,23 @@ const RegisterStock: React.FC<RegisterStockProps> = ({ stocksClient, returnToMyS
   }
   )
 
-   function register(){
-    const newStockRegister:NewStock={
-      code:form.code.value,
-      date:form.date.value,
-      amount:Number(form.amount.value),
-      unitPrice:Number(form.unitPrice.value)
+   async function register(){
+    const newBuyTransaction:CreateTransaction={
+      PortfolioId:userId,
+      Type:"buy",
+      Code:form.code.value,
+      Date:form.date.value,
+      Amount:Number(form.amount.value),
+      UnitPrice:Number(form.unitPrice.value)
     }
-    updateStocks(newStockRegister)
+    const newMonthlyRecord:CreateMonthlyRecord={
+      portfolioId:userId,
+      date:form.date.value,
+      value:(Number(form.amount.value)*(Number(form.unitPrice.value)))
+    }
+    await AddStock(newBuyTransaction);
+    await AddMonthlyRecord(newMonthlyRecord);
+    updateStocks()
     returnToMyStocks()
   }
 

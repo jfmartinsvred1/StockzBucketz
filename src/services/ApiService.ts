@@ -1,16 +1,16 @@
 import axios from "axios";
-import { NewStock } from "../models/Stock";
+import { CreateMonthlyRecord, CreateTransaction } from "../models/types";
 
 
-export function AddStock(stock:NewStock,userId:string){
-    axios.post("https://localhost:7142/Stock",{
-            "idUser": userId,
-            "code": stock.code,
-            "date": stock.date,
-            "amount": stock.amount,
-            "unitPrice": stock.unitPrice
-    }).then((data)=>{
-        console.log(data);
+export async function AddStock(transaction:CreateTransaction){
+    await axios.post("http://localhost:5053/Portfolio/AddStock",{
+            "portfolioId": transaction.PortfolioId,
+            "type":transaction.Type,
+            "code": transaction.Code,
+            "date": transaction.Date,
+            "amount": transaction.Amount,
+            "unitPrice": transaction.UnitPrice
+    }).then(()=>{
     }
     )
     .catch(
@@ -18,22 +18,41 @@ export function AddStock(stock:NewStock,userId:string){
     )
 }
 
-export async function GetStocksOfUser(id:string){
+export async function AddMonthlyRecord(monthlyRecord:CreateMonthlyRecord){
+    await axios.post("http://localhost:5053/Portfolio/AddMonthlyRecord",{
+            "portfolioId": monthlyRecord.portfolioId,
+            "date": monthlyRecord.date,
+            "value":monthlyRecord.value
+    }).then(()=>{
+    }
+    )
+    .catch(
+        (err)=>console.log(err)
+    )
+}
 
-   return await axios.get("https://localhost:7142/Stock",{
+export async function GetPortfolio(id:string){
+
+   return await axios.get("http://localhost:5053/Portfolio",{
         params:{
-            id:id
+            userId:id
         }
     }).then((data)=>data.data)
 }
+export async function CreatePortfolio(id:string){
+
+    return await axios.post("http://localhost:5053/Portfolio",{
+         "portfolioId": id,
+     }).then((data)=>data.data)
+ }
 
 export async function GetAllStocs(){
-    return await axios.get("https://localhost:7142/Stock/All",{
+    return await axios.get("http://localhost:5053/Portfolio/AllStocks",{
      }).then((data)=>data.data)
  }
 
  export async function DeleteStock(id:number){
-    return await axios.delete("https://localhost:7142/Stock",{
+    return await axios.delete("http://localhost:5053/Stock",{
         params:{
             id:id
         }

@@ -8,14 +8,32 @@ import MyStocks from './components/myStocks';
 import Register from './components/register';
 import Loading from './components/loading';
 import { useAuthContext } from './contexts/auth/AuthContext';
+import { Portfolio, StockBrapi } from './models/types';
+import { useEffect, useState } from 'react';
+import { GetPortfolio } from './services/ApiService';
 
 type User={
   email:string
 }
 
 function App() {
-  const {isLoadingLoggerUser,user,myStocks,setMyStocks}=useAuthContext();
+  const {isLoadingLoggerUser,user}=useAuthContext();
 
+  const [portfolio, setPortfolio] = useState<Portfolio>();
+  const [allStocks, setAllStocks] = useState<StockBrapi[]>([
+    {
+        change: 0,
+        close: 0,
+        log: "",
+        market_cap: 0,
+        name: "",
+        sector: "",
+        stock: "",
+        type: "",
+        volume: 0
+    }
+]);
+    
   return (
     <>
       {
@@ -26,11 +44,11 @@ function App() {
           <Route 
             path='/' 
             element={
-              !user ? <Login/> : <Navigate to='/myStocks' />
+              !user ? <Login setPortfolio={setPortfolio} setAllStocks={setAllStocks}/> : <Navigate to='/myStocks' />
             }
           />
-          <Route path='/myStocks' element={user ?<MyStocks userId={user!==null ?user.uid:user} setMyStockss={setMyStocks} myStockss={myStocks}/> : <Navigate to={'/'}/> } />
-          <Route path='/register' element={!user ?<Register  />:<Navigate to={'/myStocks'}/>} />
+          <Route path='/myStocks' element={user ?<MyStocks setAllStocks={setAllStocks} allStocks={allStocks} portfolio={portfolio!} setPortfolio={setPortfolio} userId={user!==null ?user.uid:user} /> : <Navigate to={'/'}/> } />
+          <Route path='/register' element={!user ?<Register setPortfolio={setPortfolio}  />:<Navigate to={'/myStocks'}/>} />
         </Routes>
         <Footer />
       </BrowserRouter>
