@@ -1,10 +1,8 @@
-import {Portfolio } from "../../models/types";
 import AuthService from "../../services/AuthService";
 import { AuthContext } from "./AuthContext"
 import { useState,useEffect } from "react";
 import * as firebaseAuth from 'firebase/auth'
 import { auth } from "../../FirebaseConfig";
-import { GetPortfolio } from "../../services/ApiService";
 
 type AuthProviderProps = {
     authService:AuthService

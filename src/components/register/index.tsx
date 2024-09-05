@@ -5,14 +5,10 @@ import ValidationError from "../validationError";
 import AuthService from "../../services/AuthService";
 import { isEmailValid } from "../../helpers/emailHelper";
 import { useAuthContext } from "../../contexts/auth/AuthContext";
-import { CreatePortfolio, GetPortfolio } from "../../services/ApiService";
-import { Portfolio } from "../../models/types";
+import { CreatePortfolio } from "../../services/ApiService";
 
-type RegisterProps={
-    setPortfolio:(portfolio:Portfolio)=>void
-}
 
-const Register = ({setPortfolio}:RegisterProps) => {
+const Register = () => {
     const { authService }: { authService: AuthService } = useAuthContext();
     const [form, setForm] = useState({
         email: {

@@ -20,3 +20,12 @@
     transform: scale(1.1);
     transition: .25s;
 }
+.charts{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.chart{
+    max-width: 300px;
+}

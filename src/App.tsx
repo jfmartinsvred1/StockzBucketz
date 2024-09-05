@@ -9,12 +9,7 @@ import Register from './components/register';
 import Loading from './components/loading';
 import { useAuthContext } from './contexts/auth/AuthContext';
 import { Portfolio, StockBrapi } from './models/types';
-import { useEffect, useState } from 'react';
-import { GetPortfolio } from './services/ApiService';
-
-type User={
-  email:string
-}
+import {  useState } from 'react';
 
 function App() {
   const {isLoadingLoggerUser,user}=useAuthContext();
@@ -48,7 +43,7 @@ function App() {
             }
           />
           <Route path='/myStocks' element={user ?<MyStocks setAllStocks={setAllStocks} allStocks={allStocks} portfolio={portfolio!} setPortfolio={setPortfolio} userId={user!==null ?user.uid:user} /> : <Navigate to={'/'}/> } />
-          <Route path='/register' element={!user ?<Register setPortfolio={setPortfolio}  />:<Navigate to={'/myStocks'}/>} />
+          <Route path='/register' element={!user ?<Register  />:<Navigate to={'/myStocks'}/>} />
         </Routes>
         <Footer />
       </BrowserRouter>

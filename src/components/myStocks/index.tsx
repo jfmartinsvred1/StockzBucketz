@@ -1,22 +1,37 @@
-import { useState, useEffect, useId } from 'react';
-import './myStockets.css'
+import { useState, useEffect, useMemo } from 'react';
+import './myStockets.css';
 import RegisterStock from '../registerStock/index';
-import { CreateTransaction, Portfolio, StockBrapi } from '../../models/types';
+import {Portfolio, StockBrapi } from '../../models/types';
 import Loading from '../loading';
-import { DataGrid, GridColDef, GridActionsCellItem, GridAddIcon, GridDeleteIcon, } from '@mui/x-data-grid';
-import lixeira from '../../images/lixeira.png'
+import { DataGrid, GridColDef, GridActionsCellItem } from '@mui/x-data-grid';
+import lixeira from '../../images/lixeira.png';
 import { Chart } from "react-google-charts";
 import { GetAllStocs, GetPortfolio } from '../../services/ApiService';
 
 type MyStocksProps = {
-    userId: any,
+    userId: string,
     portfolio: Portfolio,
     setPortfolio: (portfolio: Portfolio) => void,
     allStocks: StockBrapi[],
     setAllStocks: (stocks: StockBrapi[]) => void
-}
+};
 
 const MyStocks = ({ userId, portfolio, setPortfolio, allStocks, setAllStocks }: MyStocksProps) => {
+    const consolidateMonthlyRecords = (records: { monthly: number; year: number; value: number }[]) => {
+        const consolidatedData: { [key: string]: number } = {};
+
+        records.forEach(record => {
+            const key = `${record.monthly}/${record.year}`;
+            if (consolidatedData[key]) {
+                consolidatedData[key] += record.value;
+            } else {
+                consolidatedData[key] = record.value;
+            }
+        });
+
+        return Object.entries(consolidatedData).map(([key, value]) => [key, value, "color: #3269a8"]);
+    };
+
     const columns: GridColDef[] = [
         { field: "code", headerName: 'Ativo', width: 110 },
         {
@@ -26,7 +41,6 @@ const MyStocks = ({ userId, portfolio, setPortfolio, allStocks, setAllStocks }: 
             valueGetter: (value: number, row) => {
                 return value.toFixed(2)
             }
-
         },
         { field: "amount", headerName: 'Quantidade', width: 110 },
         {
@@ -36,7 +50,6 @@ const MyStocks = ({ userId, portfolio, setPortfolio, allStocks, setAllStocks }: 
             valueGetter: (value: number, row) => {
                 return value.toFixed(2)
             }
-
         },
         {
             field: "earnings",
@@ -45,7 +58,6 @@ const MyStocks = ({ userId, portfolio, setPortfolio, allStocks, setAllStocks }: 
             valueGetter: (value: number, row) => {
                 return value.toFixed(2)
             }
-
         },
         {
             field: "value",
@@ -54,7 +66,6 @@ const MyStocks = ({ userId, portfolio, setPortfolio, allStocks, setAllStocks }: 
             valueGetter: (value: number, row) => {
                 return value.toFixed(2)
             }
-
         },
         {
             field: "cost",
@@ -63,7 +74,6 @@ const MyStocks = ({ userId, portfolio, setPortfolio, allStocks, setAllStocks }: 
             valueGetter: (value: number, row) => {
                 return value.toFixed(2)
             }
-
         },
         {
             field: 'actions',
@@ -71,45 +81,52 @@ const MyStocks = ({ userId, portfolio, setPortfolio, allStocks, setAllStocks }: 
             headerName: 'Delete',
             width: 100,
             cellClassName: 'actions',
-
-            getActions: ({ id }) => {
-
-                return [
-                    <GridActionsCellItem
-                        icon={<img src={lixeira} width="16px" />}
-                        label="Cancel"
-                        className="textPrimary"
-                        onClick={(e) => console.log(id)}
-                        color="inherit"
-                    />,
-                ];
-            },
+            getActions: ({ id }) => [
+                <GridActionsCellItem
+                    icon={<img src={lixeira} width="16px" alt='Lixeira para deletar item'/>}
+                    label="Delete"
+                    className="textPrimary"
+                    onClick={(e) => console.log(id)}
+                    color="inherit"
+                />,
+            ],
         },
     ];
-    console.log('Renderizei')
-    const [showLoading, setShowLoading] = useState(false)
 
+    const [showLoading, setShowLoading] = useState(false);
     const [showRegisterStock, setShowRegisterStock] = useState(false);
 
     useEffect(() => {
-        GetPortfolio(userId).then((data) => setPortfolio(data)).catch((err) => console.log(err))
-        GetAllStocs().then((data) => setAllStocks(data)).catch((err) => console.log(err))
-    }, [])
+        const fetchData = async () => {
+            try {
+                const portfolioData = await GetPortfolio(userId);
+                setPortfolio(portfolioData);
+                const allStocksData = await GetAllStocs();
+                setAllStocks(allStocksData);
+            } catch (err) {
+                console.log(err);
+            }
+        };
+        fetchData();
+    }, [userId, setPortfolio, setAllStocks]);
 
-    const dataPieChart = [
+    const dataPieChart = useMemo(() => [
         ["Code", "Value"],
-        ...(portfolio?.stocks.map((s) => [s.code, parseFloat(s.value.toFixed(2))]) || [])
-    ];
+        ...(portfolio?.stocks.map(s => [s.code, parseFloat(s.value.toFixed(2))]) || [])
+    ], [portfolio?.stocks]);
 
-    const dataColumnChart = [
-        ["Ano", "Valor", { role: "style" }],
-        ...(portfolio?.monthlyRecords.map((m) => [`${m.monthly}/${m.year}`, m.value, "color: #e5e4e2"]) || [])
-    ];
+    const dataColumnChart = useMemo(() => {
+        const consolidatedRecords = consolidateMonthlyRecords(portfolio?.monthlyRecords || []);
+        return [
+            ["Ano", "Valor", { role: "style" }],
+            ...consolidatedRecords
+        ];
+    }, [portfolio?.monthlyRecords]);
 
     const optionsChart = {
         title: "Distribuição de Ativos",
-        pieHole: 0.4, // Se desejar um gráfico de rosca
-        backgroundColor: "#f4f4f4",
+        pieHole: 0.4,
+        backgroundColor: "#f8f9fa",
         legend: { position: "bottom" }
     };
 
@@ -118,7 +135,7 @@ const MyStocks = ({ userId, portfolio, setPortfolio, allStocks, setAllStocks }: 
     }
 
     function updateStocks() {
-        GetPortfolio(userId).then((data) => setPortfolio(data)).catch((err) => console.log(err));
+        GetPortfolio(userId).then(data => setPortfolio(data)).catch(err => console.log(err));
     }
 
     function goRegisterStock() {
@@ -179,20 +196,20 @@ const MyStocks = ({ userId, portfolio, setPortfolio, allStocks, setAllStocks }: 
                 </div>
             </div>
 
-            <div className='d-flex'>
+            <div className='d-flex bg-white p-2 shadow mb-3 bg-body-tertiary rounded  w-100 charts'>
                 <Chart
+                    className='chart'
                     chartType="ColumnChart"
-                    width="100%"
-                    height="400px"
                     data={dataColumnChart}
                     options={optionsChart}
+                    height={"400px"}
                 />
                 {portfolio?.stocks && portfolio.stocks.length > 0 && (
                     <Chart
+                        className='chart'
                         chartType="PieChart"
                         data={dataPieChart}
                         options={optionsChart}
-                        width={"100%"}
                         height={"400px"}
                     />
                 )}
