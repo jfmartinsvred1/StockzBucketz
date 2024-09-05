@@ -124,6 +124,12 @@ const MyStocks = ({ userId, portfolio, setPortfolio, allStocks, setAllStocks }: 
     }, [portfolio?.monthlyRecords]);
 
     const optionsChart = {
+        title: "Aportes Por Mês",
+        pieHole: 0.4,
+        backgroundColor: "#f8f9fa",
+        legend: { position: "bottom" }
+    };
+    const optionsChartPie = {
         title: "Distribuição de Ativos",
         pieHole: 0.4,
         backgroundColor: "#f8f9fa",
@@ -209,7 +215,7 @@ const MyStocks = ({ userId, portfolio, setPortfolio, allStocks, setAllStocks }: 
                         className='chart'
                         chartType="PieChart"
                         data={dataPieChart}
-                        options={optionsChart}
+                        options={optionsChartPie}
                         height={"400px"}
                     />
                 )}
