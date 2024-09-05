@@ -7,7 +7,6 @@ StockzBucketz é uma aplicação para gerenciamento de portfólios de ações, u
 
 ## Pré-visualização
 
-https://github.com/user-attachments/assets/1a065863-717b-4490-b44c-b9e518c40011
 ![foto3](https://github.com/user-attachments/assets/d57606a9-a96c-478d-9129-2d0416fe4720)
 ![foto4](https://github.com/user-attachments/assets/467f3b74-360e-4db9-b4f3-51d460f1fcc9)
 ![foto5](https://github.com/user-attachments/assets/45af868b-2a88-4e57-bfef-3b8d18a3ee82)
