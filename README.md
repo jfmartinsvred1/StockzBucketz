@@ -10,18 +10,12 @@ https://github.com/user-attachments/assets/1a065863-717b-4490-b44c-b9e518c40011
 
 - Node.js (>= 20.17)
 - npm (>= 6.x) ou Yarn (>= 1.x)
-- .NET 8
-- Banco de dados SQL Server ou MySQL configurado na máquina
-- Docker (opcional)
 
 ## Tecnologias Utilizadas
  - Docker
- - .NET 8
  - React
  - Typescript
  - Firebase
- - SqlServe
- - MySql
 
 ## Instalação
 
@@ -48,31 +42,12 @@ https://github.com/user-attachments/assets/1a065863-717b-4490-b44c-b9e518c40011
     REACT_APP_FIREBASE_APP_ID="seu-app-id"
     REACT_APP_FIREBASE_MEASUREMENT_ID="seu-measurement-id"
     REACT_APP_LOCAL_URL_API="https://localhost:7142"
-5.Configure o banco de dados SQL Server ou MySQL na sua máquina.
+5.Configure a api corretamente repositorio da api:
 
-6.Para rodar a aplicação localmente, você pode escolher uma das opções abaixo:
+    https://github.com/jfmartinsvred1/StockzBucketz-api/tree/main
 
- ..Rodando o backend com .NET 8:
-  
-
-  Navegue até a pasta da API e rode o backend com o seguinte comando:
-
-    bash
-    Copiar código
-    cd StockzBucketz.Api
-    dotnet run
-  Verifique as URLs da API:
-
-  Certifique-se de que as URLs da API configuradas no serviço ApiService do React estejam apontando para a mesma URL em que o backend .NET está rodando.
-
-  ..Usando Docker:
-
-  Certifique-se de que o Docker esteja instalado e em execução, depois utilize:
-
-    bash
-    Copiar código
-    docker-compose up
-  Scripts Disponíveis
+    
+Scripts Disponíveis
   No diretório do projeto, você pode executar:
 
     npm start
