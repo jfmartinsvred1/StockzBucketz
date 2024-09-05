@@ -5,6 +5,9 @@ StockzBucketz é uma aplicação para gerenciamento de portfólios de ações, u
 ## Pré-visualização
 
 https://github.com/user-attachments/assets/1a065863-717b-4490-b44c-b9e518c40011
+![foto1](https://github.com/user-attachments/assets/a6c063d7-8704-4f40-b260-6927a72788e5)
+![foto2](https://github.com/user-attachments/assets/350be491-5bf4-404d-acb0-dc164010cf7d)
+
 
 ## Pré-requisitos
 
@@ -42,9 +45,19 @@ https://github.com/user-attachments/assets/1a065863-717b-4490-b44c-b9e518c40011
     REACT_APP_FIREBASE_APP_ID="seu-app-id"
     REACT_APP_FIREBASE_MEASUREMENT_ID="seu-measurement-id"
     REACT_APP_LOCAL_URL_API="https://localhost:7142"
-5.Configure a api corretamente repositorio da api:
+## 5. Configure a API corretamente
 
-    https://github.com/jfmartinsvred1/StockzBucketz-api/tree/main
+Para que o frontend funcione corretamente, você precisará baixar e configurar a API do projeto.
+
+1. Clone o repositório da API:
+
+   ```bash
+   git clone https://github.com/jfmartinsvred1/StockzBucketz-api.git
+   cd StockzBucketz-api
+2. Siga as instruções no README.md do repositório da API para configurá-la e rodá-la localmente ou utilizando Docker.
+
+Repositório da API:
+https://github.com/jfmartinsvred1/StockzBucketz-api/tree/main
 
     
 Scripts Disponíveis
