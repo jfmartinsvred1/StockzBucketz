@@ -5,8 +5,14 @@ import ValidationError from "../validationError";
 import AuthService from "../../services/AuthService";
 import { isEmailValid } from "../../helpers/emailHelper";
 import { useAuthContext } from "../../contexts/auth/AuthContext";
+import { CreatePortfolio, GetPortfolio } from "../../services/ApiService";
+import { Portfolio } from "../../models/types";
 
-const Register = () => {
+type RegisterProps={
+    setPortfolio:(portfolio:Portfolio)=>void
+}
+
+const Register = ({setPortfolio}:RegisterProps) => {
     const { authService }: { authService: AuthService } = useAuthContext();
     const [form, setForm] = useState({
         email: {
@@ -57,7 +63,8 @@ const Register = () => {
         setShowLoading(true);
         if (verifyRepassword()) {
             await authService.register(form.email.value, form.password.value)
-                .then(() => {
+                .then((data) => {
+                    CreatePortfolio(data.user.uid);
                     goToPage('/myStocks')
                 })
                 .catch((err) => {

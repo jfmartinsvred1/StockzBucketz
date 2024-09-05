@@ -1,9 +1,10 @@
-import { MyStock } from "../../models/Stock";
+import {Portfolio } from "../../models/types";
 import AuthService from "../../services/AuthService";
 import { AuthContext } from "./AuthContext"
 import { useState,useEffect } from "react";
 import * as firebaseAuth from 'firebase/auth'
 import { auth } from "../../FirebaseConfig";
+import { GetPortfolio } from "../../services/ApiService";
 
 type AuthProviderProps = {
     authService:AuthService
@@ -11,7 +12,6 @@ type AuthProviderProps = {
 }
 
 export default function AuthProvider(props: AuthProviderProps) {
-    const [myStocks, setMyStocks] = useState<MyStock[]>([]);
     const [isLoadingLoggerUser, setIsLoadingLoggerUser] = useState(true);
     const [user, setUser] = useState<any>(null);
 
@@ -19,12 +19,13 @@ export default function AuthProvider(props: AuthProviderProps) {
         firebaseAuth.onAuthStateChanged(auth,(user:any)=>{
             setIsLoadingLoggerUser(false);
             setUser(user)
+            
         })
     }, []);
 
     return (
         <AuthContext.Provider value={{
-            isLoadingLoggerUser,user,myStocks,setMyStocks, authService: props.authService
+            isLoadingLoggerUser,user, authService: props.authService
         }}>
             {props.children}
         </AuthContext.Provider>

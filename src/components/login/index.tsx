@@ -5,11 +5,16 @@ import { useNavigate } from "react-router-dom";
 import AuthService from "../../services/AuthService";
 import Loading from "../loading";
 import { useAuthContext } from "../../contexts/auth/AuthContext";
+import { GetAllStocs, GetPortfolio } from "../../services/ApiService";
+import { Portfolio, StockBrapi } from "../../models/types";
 
 
+type LoginProps={
+  setAllStocks:(allStocks:StockBrapi[])=>void,
+  setPortfolio:(portfolio:Portfolio)=>void
+}
 
-
-const Login = () => {
+const Login = ({setAllStocks,setPortfolio}:LoginProps) => {
 
   const {authService}:{authService:AuthService}=useAuthContext();
 
@@ -39,7 +44,8 @@ const Login = () => {
     setShowLoading(true);
     await authService.login(form.email.value, form.password.value)
     .then((user)=>{
-      console.log(user.user.uid)
+      GetPortfolio(user.user.uid).then((data)=>setPortfolio(data)).catch((err)=>console.log(err))
+      GetAllStocs().then((data)=>setAllStocks(data)).catch((err)=>console.log(err))
       setShowLoading(false);
     })
     .catch((err)=>{
