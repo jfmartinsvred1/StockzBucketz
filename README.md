@@ -1,5 +1,5 @@
 # StockzBucketz
-Project link : https://stockz-bucketz.vercel.app
+Project link : https://stockz-bucketz.vercel.app "A API ainda não está disponível na nuvem, portanto, para rodar o projeto localmente"
 
 # Getting Started with Create React App
 
